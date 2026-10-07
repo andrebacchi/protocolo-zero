@@ -10,6 +10,7 @@ Endereço: **https://andrebacchi.github.io/protocolo-zero/** · faz parte do [BA
 - **Palpites de risco:** a cada perigo novo, cada equipe estima a probabilidade de a próxima carta encerrar a expedição. O risco real só aparece no relatório final.
 - **Probabilidade de vencer:** declarada por equipe ao fim de cada expedição e comparada, no fim, com uma estimativa feita a partir do placar real.
 - **Relatório final:** calibração dos palpites por equipe, ranking e bônus de palpites, risco real carta a carta e decisões com valor esperado negativo.
+- **Ficha da equipe:** para o celular ou tablet de cada equipe, quando não dá para imprimir: ficha de campo que soma sozinha e cartões de CONTINUAR e RETORNAR em tela cheia. Abre por QR code, sem cadastro.
 - **Expedição solo:** uma partida contra três equipes automáticas.
 - **Kit de sala (PDF):** cartões de decisão no tamanho de carta padrão (63,5 × 88 mm) e ficha de campo, em `kit/`.
 

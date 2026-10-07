@@ -7,7 +7,7 @@ A cada atualização publicada, aumente VERSAO: ela aparece no rodapé e renova 
 import glob, json, os, re, sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-VERSAO = '1.1'
+VERSAO = '1.2'
 FIXOS = 'protocolo-zero-fixos-v1'   # cache das imagens e fontes; só mude se as imagens mudarem
 SITE = 'https://andrebacchi.github.io/protocolo-zero/'
 HUB = 'https://andrebacchi.github.io/bacchilab/'
@@ -26,8 +26,7 @@ def gravar(caminho, texto):
     print(os.path.relpath(caminho, RAIZ), f'{len(texto.encode()) / 1024:.0f} KB')
 
 imagens = sorted(os.path.relpath(f, RAIZ).replace(os.sep, '/') for pasta in ('cards', 'regioes') for f in glob.glob(os.path.join(RAIZ, pasta, '*.webp')))
-imagens.append('icons/icone.webp')
-assert len(imagens) == 33, f'esperava 33 imagens (26 cartas e verso, capa, 5 regiões, ícone); achei {len(imagens)}'
+assert len(imagens) == 32, f'esperava 32 imagens (25 cartas, verso, capa e 5 regiões); achei {len(imagens)}'
 
 css = ler('app.css')
 js = (ler('app.js')
@@ -37,6 +36,7 @@ js = (ler('app.js')
 corpo = (ler('body.html')
          .replace('__VERSAO__', VERSAO)
          .replace('__QR__', re.sub(r'>\s+<', '><', ler('qr.svg').strip()).replace('<svg ', '<svg role="img" aria-label="QR code para andrebacchi.github.io/protocolo-zero" '))
+         .replace('__QR_EQUIPE__', re.sub(r'>\s+<', '><', ler('qr-equipe.svg').strip()).replace('<svg ', '<svg role="img" aria-label="QR code para a ficha da equipe" '))
          .replace('__HUB__', HUB)
          .replace('__HUB_ALVO__', ' target="_blank" rel="noopener"' if ARTEFATO else ''))
 assert '__' not in corpo.replace('__proto__', ''), 'sobrou marcador sem substituir em body.html'

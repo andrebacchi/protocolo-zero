@@ -16,7 +16,7 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()));
 });
 const guardar = (cache, req, resp) => { if (resp && (resp.ok || resp.type === 'opaque')) { const copia = resp.clone(); caches.open(cache).then(c => c.put(req, copia)); } return resp; };
-const IMAGEM = /^(cards|regioes)\/|^icons\/icone\.webp$/;
+const IMAGEM = /^(cards|regioes)\//;
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;

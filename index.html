@@ -144,7 +144,6 @@ h1 em{font-style:normal;color:var(--perigo)}
 #tela-capa{position:relative}
 .topo,.abre-texto{position:relative;z-index:1}
 .capa-arte{height:54vw;max-height:300px;margin-inline:-16px;background:var(--fundo) url("cards/capa.webp") 82% 40%/cover no-repeat;-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
-.logo{width:56px;height:56px;border-radius:13px;box-shadow:var(--sombra)}
 @media (min-width:820px){
   .abre{grid-template-columns:minmax(0,1fr);min-height:clamp(360px,34vw,470px);align-content:center}
   .abre-texto{max-width:30rem;grid-template-columns:minmax(0,1fr)}
@@ -171,7 +170,8 @@ h1 em{font-style:normal;color:var(--perigo)}
 .barra > :first-child{justify-self:start}
 .barra > :last-child{justify-self:end}
 .barra-lado{display:flex;align-items:center}
-.so-largo{display:none}
+.so-largo,.so-projetor{display:none}
+@media (min-width:700px){.so-projetor{display:inline-flex;align-items:center}}
 @media (min-width:700px){.so-estreito{display:none}.so-largo{display:inline}}
 .barra.fixa{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--mesa);border-bottom:1px solid var(--filete)}
 
@@ -333,6 +333,46 @@ label.eq{cursor:text}
   .mapa.grande{width:clamp(280px,30vw,430px)}
 }
 
+/* ---------- ficha da equipe (celular) ---------- */
+#tela-equipe{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:48px minmax(0,1fr) auto;overflow:hidden}
+.ficha{overflow-y:auto;padding:12px 16px 22px;scrollbar-width:thin;scrollbar-color:var(--filete) transparent}
+.ficha-miolo{display:grid;gap:12px;max-width:640px;margin-inline:auto}
+.f-campo{display:grid;gap:5px;font:500 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--nevoa)}
+.f-campo input,.f-campo select,.f-num input{width:100%;min-height:44px;padding:6px 10px;border:1px solid var(--filete-forte);border-radius:3px;background:rgba(239,232,214,.07);color:var(--papel);font:600 18px/1.1 var(--mono)}
+.f-campo input{font:600 18px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.f-campo select{font:500 16px/1.2 var(--texto)}
+.f-campo select option{color:#0f1b2b}
+.f-exp{border:1px solid var(--filete);border-radius:4px;background:rgba(8,18,32,.5)}
+.f-exp:last-of-type{border-bottom:1px solid var(--filete)}
+.f-exp summary{padding:10px 12px;font-size:18px}
+.f-exp summary small{margin-left:auto;font:600 15px/1 var(--mono);letter-spacing:0;color:var(--dado-claro)}
+.f-exp summary::after{margin-left:10px}
+.f-corpo{display:grid;gap:12px;padding:2px 12px 14px}
+.f-rot{font:500 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--nevoa)}
+.f-linha{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.f-num{display:grid;gap:3px;min-width:0;font:500 10px/1.15 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--nevoa)}
+.f-num input{padding-inline:4px;text-align:center}
+.f-linha .f-num input{border-color:var(--perigo)}
+.f-conta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:end}
+.f-saida{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
+.f-saida .tile{padding:6px 8px 5px;min-width:0}
+.f-saida .tile b{font-size:24px;color:var(--dado-claro)}
+.f-saida .tile.total b{color:var(--papel)}
+.f-saida .f-num input{border-color:var(--achado)}
+.f-saida .f-num{align-content:end}
+.f-fim{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
+.f-fim .tile b{color:var(--achado)}
+.cartoes-barra{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--filete);background:rgba(13,26,44,.96)}
+.cartoes-barra p{grid-column:1/-1;font:400 12.5px/1.3 var(--texto);color:var(--nevoa);text-align:center}
+.btn-cartao{min-height:56px;border:0;border-radius:4px;color:var(--tinta);font:700 22px/1 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.btn-cartao.c,.cartao-cheio.c{background:var(--dado)}
+.btn-cartao.r,.cartao-cheio.r{background:var(--achado)}
+.cartao-cheio{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:3.5vh;width:100%;padding:6vw;border:0;border-radius:0;color:var(--tinta);text-align:center}
+.cartao-cheio svg{width:min(34vw,30vh);height:auto}
+.cartao-cheio b{max-width:100%;white-space:nowrap;font:700 clamp(54px,19vw,210px)/.9 var(--display);letter-spacing:-.005em;text-transform:uppercase}
+.cartao-cheio span{font:600 clamp(17px,4.4vw,34px)/1.2 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.cartao-cheio i{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));font:500 12px/1 var(--mono);font-style:normal;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+
 /* ---------- gráfico e tabelas ---------- */
 .graf{display:grid;gap:6px;min-width:0}
 .graf svg{display:block;width:100%;height:auto;overflow:visible}
@@ -442,7 +482,6 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
   <header class="abre">
     <div class="capa-arte" role="img" aria-label="Uma equipe de campo, de costas, entre a tenda iluminada e a cidade ao pôr do sol"></div>
     <div class="abre-texto">
-      <img class="logo" src="icons/icone.webp" alt="" width="56" height="56">
       <p class="sobre">Jogo de André D. Bacchi</p>
       <h1>Protocolo <em>Zero</em></h1>
       <p class="sub">Uma investigação epidemiológica para quem sabe a hora de voltar</p>
@@ -467,6 +506,10 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
           <b>Painel do professor</b><span class="selo">Abrir</span>
           <small>Projete a tela. De 3 a 8 equipes decidem ao mesmo tempo e você marca quem retorna. Os alunos não precisam de celular.</small>
         </button>
+        <button class="modo" type="button" data-ir="equipe">
+          <b>Ficha da equipe</b><span class="selo">Abrir</span>
+          <small>Para o celular ou tablet de cada equipe, quando não der para imprimir: ficha de campo que soma sozinha e cartões de CONTINUAR e RETORNAR em tela cheia.</small>
+        </button>
       </div>
       <div class="grupo">
         <h3>Para jogar sozinho</h3>
@@ -486,7 +529,7 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
     <p>Mecânica de <i>push your luck</i> inspirada em <cite>Diamant</cite> / <cite>Incan Gold</cite> (Tesouro Inca), de Alan R. Moon e Bruno Faidutti. Tema, cartas e textos são originais.</p>
     <p>O surto, a doença e o agente são fictícios. Contornos dos estados simplificados a partir de dados abertos (Code for America, <cite>click_that_hood</cite>). Uso educacional.</p>
     <p>© André Demambre Bacchi. Todos os direitos reservados.</p>
-    <p class="versao">Versão 1.1</p>
+    <p class="versao">Versão 1.2</p>
   </footer>
 </div>
 </main>
@@ -516,6 +559,7 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
     <label class="opcao"><input type="checkbox" id="op-placar" checked><span>Placar oculto</span>
       <small>A tela mostra a divisão de cada carta e os dados pendentes, mas não o total de cada equipe. Cada equipe anota o seu. Você pode mostrar o placar quando quiser.</small></label>
     <p class="ajuda" id="kit-linha" hidden>Antes da aula, imprima o <a href="kit/Protocolo-Zero-kit-de-sala.pdf" target="_blank" rel="noopener">kit de sala (PDF)</a>: cartões de CONTINUAR e RETORNAR e a ficha de campo das equipes.</p>
+    <p class="ajuda">Sem impressão? <button class="elo" type="button" data-ato="qr-equipe">Mostre o QR code da ficha digital</button>: cada equipe abre no celular a ficha de campo e os cartões de CONTINUAR e RETORNAR.</p>
     <button class="btn principal grande" type="submit">Começar a investigação</button>
   </form>
 </section>
@@ -525,6 +569,7 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
     <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
     <h2 id="j-titulo">Expedição 1 de 5</h2>
     <div class="barra-lado">
+      <button class="btn-liso so-projetor" type="button" data-ato="qr-equipe">QR da ficha</button>
       <button class="btn-liso" type="button" data-regras="jogo">Regras</button>
       <button class="btn-liso" type="button" id="desfazer" aria-label="Desfazer a última ação" title="Desfazer a última ação" disabled><span class="so-largo">Desfazer</span><span class="so-estreito" aria-hidden="true">↶</span></button>
     </div>
@@ -556,6 +601,20 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
     <div class="barra-lado"><button class="btn-liso" type="button" data-regras="percebido">Regras</button></div>
   </header>
   <div class="miolo fim" id="fim"></div>
+</section>
+
+<section class="tela" id="tela-equipe" hidden>
+  <header class="barra">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2>Ficha da equipe</h2>
+    <div class="barra-lado"><button class="btn-liso" type="button" data-regras="jogo">Regras</button></div>
+  </header>
+  <div class="ficha"><form class="ficha-miolo" id="ficha" autocomplete="off"></form></div>
+  <div class="cartoes-barra">
+    <p>Na hora de decidir, escolha em segredo e mostre a tela no “já”:</p>
+    <button class="btn-cartao c" type="button" data-cartao="c">Continuar</button>
+    <button class="btn-cartao r" type="button" data-cartao="r">Retornar</button>
+  </div>
 </section>
 
 <section class="tela" id="tela-baralho" hidden>
@@ -605,6 +664,18 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
   </div>
 </dialog>
 
+<dialog class="qr" id="qr-equipe" lang="pt-BR" aria-label="QR code da ficha da equipe">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo qr-corpo">
+    <p class="chapa">Para as equipes · celular ou tablet</p>
+    <h3>Ficha da equipe</h3>
+    <div class="qr-quadro"><svg role="img" aria-label="QR code para a ficha da equipe" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><rect width="37" height="37" fill="#fff"/><path d="M2 2h7v1h-7zM10 2h1v1h-1zM12 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM24 2h1v1h-1zM28 2h7v1h-7zM2 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM13 3h2v1h-2zM18 3h2v1h-2zM21 3h1v1h-1zM23 3h2v1h-2zM28 3h1v1h-1zM34 3h1v1h-1zM2 4h1v1h-1zM4 4h3v1h-3zM8 4h1v1h-1zM10 4h1v1h-1zM19 4h2v1h-2zM22 4h2v1h-2zM28 4h1v1h-1zM30 4h3v1h-3zM34 4h1v1h-1zM2 5h1v1h-1zM4 5h3v1h-3zM8 5h1v1h-1zM13 5h1v1h-1zM17 5h1v1h-1zM22 5h3v1h-3zM26 5h1v1h-1zM28 5h1v1h-1zM30 5h3v1h-3zM34 5h1v1h-1zM2 6h1v1h-1zM4 6h3v1h-3zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h2v1h-2zM15 6h3v1h-3zM20 6h1v1h-1zM22 6h2v1h-2zM26 6h1v1h-1zM28 6h1v1h-1zM30 6h3v1h-3zM34 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM11 7h2v1h-2zM15 7h2v1h-2zM19 7h2v1h-2zM22 7h4v1h-4zM28 7h1v1h-1zM34 7h1v1h-1zM2 8h7v1h-7zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM28 8h7v1h-7zM11 9h1v1h-1zM15 9h1v1h-1zM21 9h1v1h-1zM25 9h1v1h-1zM2 10h1v1h-1zM5 10h7v1h-7zM13 10h1v1h-1zM16 10h4v1h-4zM21 10h1v1h-1zM25 10h3v1h-3zM30 10h1v1h-1zM32 10h3v1h-3zM2 11h3v1h-3zM6 11h2v1h-2zM10 11h3v1h-3zM14 11h1v1h-1zM17 11h1v1h-1zM21 11h1v1h-1zM24 11h2v1h-2zM30 11h4v1h-4zM2 12h2v1h-2zM5 12h1v1h-1zM8 12h2v1h-2zM12 12h1v1h-1zM16 12h5v1h-5zM22 12h1v1h-1zM25 12h3v1h-3zM30 12h5v1h-5zM2 13h1v1h-1zM4 13h1v1h-1zM6 13h2v1h-2zM10 13h3v1h-3zM16 13h1v1h-1zM18 13h2v1h-2zM21 13h2v1h-2zM26 13h4v1h-4zM32 13h3v1h-3zM5 14h1v1h-1zM7 14h2v1h-2zM11 14h1v1h-1zM14 14h3v1h-3zM18 14h3v1h-3zM22 14h1v1h-1zM25 14h5v1h-5zM4 15h3v1h-3zM9 15h1v1h-1zM12 15h2v1h-2zM18 15h1v1h-1zM25 15h1v1h-1zM27 15h1v1h-1zM29 15h1v1h-1zM31 15h2v1h-2zM2 16h1v1h-1zM8 16h3v1h-3zM12 16h1v1h-1zM15 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM23 16h2v1h-2zM26 16h1v1h-1zM28 16h3v1h-3zM32 16h1v1h-1zM3 17h2v1h-2zM6 17h1v1h-1zM14 17h4v1h-4zM20 17h1v1h-1zM22 17h1v1h-1zM25 17h3v1h-3zM29 17h1v1h-1zM31 17h2v1h-2zM34 17h1v1h-1zM7 18h2v1h-2zM12 18h4v1h-4zM22 18h1v1h-1zM24 18h2v1h-2zM27 18h5v1h-5zM2 19h1v1h-1zM4 19h2v1h-2zM17 19h1v1h-1zM20 19h2v1h-2zM24 19h1v1h-1zM28 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM34 19h1v1h-1zM2 20h1v1h-1zM6 20h1v1h-1zM8 20h4v1h-4zM14 20h1v1h-1zM16 20h3v1h-3zM21 20h1v1h-1zM23 20h1v1h-1zM25 20h2v1h-2zM29 20h1v1h-1zM31 20h2v1h-2zM34 20h1v1h-1zM4 21h1v1h-1zM6 21h1v1h-1zM11 21h3v1h-3zM15 21h8v1h-8zM24 21h1v1h-1zM28 21h1v1h-1zM30 21h4v1h-4zM2 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h2v1h-2zM11 22h3v1h-3zM16 22h1v1h-1zM22 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM33 22h1v1h-1zM2 23h6v1h-6zM9 23h1v1h-1zM11 23h1v1h-1zM13 23h4v1h-4zM18 23h4v1h-4zM25 23h1v1h-1zM27 23h1v1h-1zM29 23h3v1h-3zM2 24h1v1h-1zM4 24h1v1h-1zM7 24h5v1h-5zM15 24h1v1h-1zM17 24h4v1h-4zM25 24h1v1h-1zM28 24h1v1h-1zM30 24h1v1h-1zM33 24h2v1h-2zM2 25h1v1h-1zM5 25h1v1h-1zM7 25h1v1h-1zM10 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM18 25h3v1h-3zM25 25h1v1h-1zM27 25h1v1h-1zM29 25h1v1h-1zM32 25h1v1h-1zM2 26h3v1h-3zM6 26h3v1h-3zM13 26h1v1h-1zM15 26h1v1h-1zM17 26h2v1h-2zM22 26h1v1h-1zM25 26h7v1h-7zM34 26h1v1h-1zM10 27h2v1h-2zM13 27h3v1h-3zM17 27h1v1h-1zM26 27h1v1h-1zM30 27h1v1h-1zM32 27h1v1h-1zM2 28h7v1h-7zM10 28h2v1h-2zM13 28h2v1h-2zM16 28h3v1h-3zM20 28h2v1h-2zM23 28h4v1h-4zM28 28h1v1h-1zM30 28h1v1h-1zM32 28h1v1h-1zM2 29h1v1h-1zM8 29h1v1h-1zM10 29h2v1h-2zM16 29h3v1h-3zM22 29h1v1h-1zM25 29h2v1h-2zM30 29h3v1h-3zM34 29h1v1h-1zM2 30h1v1h-1zM4 30h3v1h-3zM8 30h1v1h-1zM10 30h1v1h-1zM14 30h1v1h-1zM17 30h1v1h-1zM19 30h4v1h-4zM24 30h7v1h-7zM34 30h1v1h-1zM2 31h1v1h-1zM4 31h3v1h-3zM8 31h1v1h-1zM10 31h1v1h-1zM12 31h2v1h-2zM15 31h1v1h-1zM19 31h1v1h-1zM21 31h2v1h-2zM25 31h1v1h-1zM27 31h1v1h-1zM29 31h1v1h-1zM31 31h4v1h-4zM2 32h1v1h-1zM4 32h3v1h-3zM8 32h1v1h-1zM13 32h3v1h-3zM18 32h2v1h-2zM21 32h1v1h-1zM24 32h1v1h-1zM27 32h1v1h-1zM29 32h2v1h-2zM33 32h2v1h-2zM2 33h1v1h-1zM8 33h1v1h-1zM11 33h3v1h-3zM16 33h3v1h-3zM21 33h1v1h-1zM24 33h1v1h-1zM27 33h1v1h-1zM29 33h6v1h-6zM2 34h7v1h-7zM10 34h3v1h-3zM15 34h1v1h-1zM18 34h2v1h-2zM21 34h1v1h-1zM25 34h6v1h-6z" fill="#161a22"/></svg></div>
+    <p class="qr-end" id="qr-equipe-end">andrebacchi.github.io/protocolo-zero/#equipe</p>
+    <p>Cada equipe abre em um aparelho: ficha de campo que soma os pontos e cartões de CONTINUAR e RETORNAR em tela cheia.</p>
+    <p class="fonte">A ficha fica salva só no aparelho da equipe. Nada é enviado ao professor: os palpites continuam sendo ditos em voz alta.</p>
+  </div>
+</dialog>
+
 <dialog id="instalar" lang="pt-BR" aria-label="Instalar o Protocolo Zero">
   <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
   <div class="corpo">
@@ -625,7 +696,7 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
 
 const PWA = true;                 // falso na versão de artefato: sem instalação nem service worker
 const FIXOS = 'protocolo-zero-fixos-v1';           // cache das imagens e fontes (o mesmo nome usado no sw.js)
-const IMAGENS = ["cards/C01.webp", "cards/C02.webp", "cards/C03.webp", "cards/C04.webp", "cards/C05.webp", "cards/C06.webp", "cards/C07.webp", "cards/C08.webp", "cards/C09.webp", "cards/C10.webp", "cards/C11.webp", "cards/C12.webp", "cards/C13.webp", "cards/C14.webp", "cards/C15.webp", "cards/D1.webp", "cards/D2.webp", "cards/D3.webp", "cards/D4.webp", "cards/D5.webp", "cards/P1.webp", "cards/P2.webp", "cards/P3.webp", "cards/P4.webp", "cards/P5.webp", "cards/capa.webp", "cards/verso.webp", "regioes/CO.webp", "regioes/N.webp", "regioes/NE.webp", "regioes/S.webp", "regioes/SE.webp", "icons/icone.webp"];         // cartas, regiões e capa, para guardar no aparelho
+const IMAGENS = ["cards/C01.webp", "cards/C02.webp", "cards/C03.webp", "cards/C04.webp", "cards/C05.webp", "cards/C06.webp", "cards/C07.webp", "cards/C08.webp", "cards/C09.webp", "cards/C10.webp", "cards/C11.webp", "cards/C12.webp", "cards/C13.webp", "cards/C14.webp", "cards/C15.webp", "cards/D1.webp", "cards/D2.webp", "cards/D3.webp", "cards/D4.webp", "cards/D5.webp", "cards/P1.webp", "cards/P2.webp", "cards/P3.webp", "cards/P4.webp", "cards/P5.webp", "cards/capa.webp", "cards/verso.webp", "regioes/CO.webp", "regioes/N.webp", "regioes/NE.webp", "regioes/S.webp", "regioes/SE.webp"];         // cartas, regiões e capa, para guardar no aparelho
 /* Artes: quando as imagens chegarem, preencha IMG com { C01: 'cards/C01.webp', ... , VERSO: 'cards/verso.webp' }.
    Enquanto uma carta não tiver imagem, o app desenha a arte provisória. */
 const IMG = { VERSO: 'cards/verso.webp', D1: 'cards/D1.webp', D2: 'cards/D2.webp', D3: 'cards/D3.webp', D4: 'cards/D4.webp', D5: 'cards/D5.webp',
@@ -1005,6 +1076,9 @@ function ir(nome) {
   if (nome === 'jogo') pintar(true);
   if (nome === 'fim') pintarFim();
   if (nome === 'baralho') pintarGaleria();
+  if (nome === 'equipe') pintarFichaEquipe();
+  // o endereço com #equipe abre direto na ficha (é o que o QR code da ficha usa)
+  try { history.replaceState(null, '', nome === 'equipe' ? '#equipe' : location.pathname + location.search); } catch (_) { /* sem acesso ao histórico */ }
   const t = $('#tela-' + nome); if (t) t.scrollTop = 0;
 }
 function abrirFicha(id) {
@@ -1062,6 +1136,7 @@ const REGRAS = [
       <li><b>Decisão simultânea.</b> Cada equipe recebe dois cartões, um de CONTINUAR e um de RETORNAR. A equipe escolhe em segredo e segura o cartão virado para baixo. Use o botão “Contar 3, 2, 1” e peça que todas levantem ao mesmo tempo. Se as equipes anunciam uma de cada vez, a última leva vantagem.</li>
       <li><b>Palpites.</b> Nas pausas, pergunte a cada equipe e digite os valores. Peça que anotem o palpite na ficha de campo antes de responder, para ninguém se guiar pela resposta dos outros. A tecla Tab passa de uma equipe para a outra.</li>
       <li><b>Placar oculto.</b> A mesa mostra a divisão de cada carta, os dados provisórios e os dados pendentes, mas não o total de cada equipe. Cada equipe anota o seu. O botão “Mostrar placar” revela os totais quando você quiser.</li>
+      <li><b>Sem impressão.</b> O botão “QR da ficha” mostra um QR code para as equipes abrirem, no celular ou tablet, a ficha de campo digital e os cartões de CONTINUAR e RETORNAR em tela cheia. A ficha fica só no aparelho da equipe; nada é enviado a você.</li>
       <li><b>Errou o toque?</b> “Desfazer” volta uma ação.</li>
       ${PWA ? '<li><b>Material impresso.</b> O <a href="kit/Protocolo-Zero-kit-de-sala.pdf" target="_blank" rel="noopener">kit de sala (PDF)</a> traz os cartões de CONTINUAR e RETORNAR, no tamanho de carta padrão, e a ficha de campo das equipes.</li>' : ''}
       <li><b>Fechou a aba sem querer?</b> A partida fica salva neste aparelho a cada jogada. Ao reabrir, use “Continuar a partida” na tela inicial.</li>
@@ -1574,6 +1649,13 @@ const ATOS = {
   volto() { G.marc = [0, ...botsQueSaem()]; aoConfirmar(); },
   bots() { G.marc = botsQueSaem(); aoConfirmar(); },
   proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') ir('fim'); else pintar(true); },
+  'qr-equipe'() { $('#qr-equipe').showModal(); },
+  'ficha-limpar'() {
+    const b = $('#ficha-limpar');
+    if (b.dataset.certeza) { cofre.gravar('ficha', null); FICHA = null; $('#ficha').innerHTML = ''; return pintarFichaEquipe(); }
+    b.dataset.certeza = '1'; b.textContent = 'Toque de novo para apagar tudo';
+    setTimeout(() => { if (b.isConnected) { delete b.dataset.certeza; b.textContent = 'Limpar a ficha'; } }, 3500);
+  },
   'de-novo'() { if (G.modo === 'solo') novoSolo(); else ir('preparo'); },
   'trocar-ok'() { $('#trocar').close(); const f = pendente; pendente = null; if (f) f(); }
 };
@@ -1583,6 +1665,7 @@ document.addEventListener('click', e => {
   if ((el = quer('[data-fechar]'))) return el.closest('dialog').close();
   if ((el = quer('[data-ir]'))) { const d = el.closest('dialog'); if (d) d.close(); return ir(el.dataset.ir); }
   if (quer('[data-solo]')) return comecar(novoSolo);
+  if ((el = quer('[data-cartao]'))) return mostrarCartao(el.dataset.cartao);
   if ((el = quer('[data-regras]'))) return abrirRegras(el.dataset.regras);
   if ((el = quer('[data-ato]'))) return ATOS[el.dataset.ato]();
   if ((el = quer('[data-eq]'))) {
@@ -1596,6 +1679,7 @@ document.addEventListener('click', e => {
   if ((el = quer('[data-abrir]')) && !ocupado) return abrirFicha(el.dataset.abrir);
 });
 document.addEventListener('input', e => {
+  if (e.target.closest('#ficha')) return aoEditarFicha(e.target);
   if (e.target.matches('[data-pal],[data-ven]')) {
     const ok = $('#pal-ok');
     if (ok) ok.disabled = !$$('[data-pal],[data-ven]').some(el => el.value.trim() !== '' && +el.value >= 0 && +el.value <= 100);
@@ -1612,6 +1696,80 @@ function mostrarDica(e) {
 }
 document.addEventListener('pointermove', mostrarDica);
 document.addEventListener('pointerdown', mostrarDica);
+
+/* ---------- ficha da equipe (celular ou tablet, quando não dá para imprimir) ----------
+   É a ficha de campo do kit em versão digital: fica salva só no aparelho da equipe (nada vai para o professor)
+   e soma os pontos sozinha. Os dois botões do rodapé mostram o cartão de decisão em tela cheia. */
+let FICHA = null;
+const fichaVazia = () => ({ equipe: '', bonus: '', exp: Array.from({ length: 5 }, () => ({ regiao: '', pal: ['', '', '', '', ''], prov: '', pend: '', desc: '', vencer: '' })) });
+const numero = v => { const n = parseFloat(String(v).replace(',', '.')); return Number.isFinite(n) ? n : 0; };
+function somasFicha() {
+  let total = 0;
+  const linhas = FICHA.exp.map(x => { const usado = [x.prov, x.pend, x.desc].some(v => String(v).trim() !== ''); const g = numero(x.prov) + numero(x.pend) + numero(x.desc); total += g; return { usado, g, total }; });
+  return { linhas, final: total + numero(FICHA.bonus) };
+}
+function pintarSomasFicha() {
+  const s = somasFicha();
+  s.linhas.forEach((l, e) => {
+    $(`#f-gar-${e}`).textContent = l.usado ? l.g : '–';
+    $(`#f-tot-${e}`).textContent = l.total;
+    $(`#f-res-${e}`).textContent = l.usado ? `${l.g} ${l.g === 1 ? 'ponto' : 'pontos'}` : '';
+  });
+  $('#f-tot-fim').textContent = s.linhas[4].total; $('#f-final').textContent = s.final;
+}
+function pintarFichaEquipe() {
+  const f = $('#ficha');
+  if (f.childElementCount) return;
+  const salva = cofre.ler('ficha');
+  FICHA = salva && Array.isArray(salva.exp) && salva.exp.length === 5 ? salva : fichaVazia();
+  const v = x => esc(x == null ? '' : x);
+  const aberta = Math.max(0, FICHA.exp.findIndex(x => ![x.prov, x.pend, x.desc].some(y => String(y).trim() !== '')));
+  const num = (id, rot, campo, val, extra = '') => `<label class="f-num" for="${id}">${rot}<input type="number" id="${id}" data-f="${campo}" value="${v(val)}" min="0" inputmode="decimal" placeholder="–"${extra}></label>`;
+  f.innerHTML = `<label class="f-campo" for="f-equipe">Nome da equipe<input type="text" id="f-equipe" data-f="equipe" maxlength="24" value="${v(FICHA.equipe)}" placeholder="Equipe"></label>
+    ${FICHA.exp.map((x, e) => `<details class="f-exp"${e === aberta ? ' open' : ''}>
+      <summary>Expedição ${e + 1}<small id="f-res-${e}"></small></summary>
+      <div class="f-corpo">
+        <label class="f-campo" for="f-reg-${e}">Região<select id="f-reg-${e}" data-f="exp.${e}.regiao"><option value="">–</option>${REGIOES.map(r => `<option${x.regiao === r.nome ? ' selected' : ''}>${r.nome}</option>`).join('')}</select></label>
+        <div><p class="f-rot">Palpites de risco (%) · um a cada perigo novo</p>
+          <div class="f-linha">${x.pal.map((p, k) => num(`f-pal-${e}-${k}`, `${k + 1}º alerta`, `exp.${e}.pal.${k}`, p, ' max="100"')).join('')}</div></div>
+        <div><p class="f-rot">Pontos · preencha quando a equipe retornar</p>
+          <div class="f-conta">${num(`f-prov-${e}`, 'Provisórios ao retornar', `exp.${e}.prov`, x.prov)}${num(`f-pend-${e}`, 'Pendentes', `exp.${e}.pend`, x.pend)}${num(`f-desc-${e}`, 'Descoberta', `exp.${e}.desc`, x.desc)}</div></div>
+        <div class="f-saida"><div class="tile"><small>Garantidos</small><b id="f-gar-${e}">–</b></div><div class="tile total"><small>Total até aqui</small><b id="f-tot-${e}">0</b></div>
+          ${e < 4 ? num(`f-ven-${e}`, 'Vencer (%)', `exp.${e}.vencer`, x.vencer, ' max="100"') : '<span></span>'}</div>
+      </div></details>`).join('')}
+    <div class="f-fim"><div class="tile total"><small>Total das 5 expedições</small><b id="f-tot-fim">0</b></div>${num('f-bonus', 'Bônus de palpites', 'bonus', FICHA.bonus)}</div>
+    <div class="tile"><small>Pontuação final</small><b id="f-final">0</b></div>
+    <p class="ajuda">Se um perigo encerrar a expedição com a equipe em campo, deixe os pontos em branco: os garantidos são 0. A ficha fica salva neste aparelho.</p>
+    <button class="btn" type="button" id="ficha-limpar" data-ato="ficha-limpar">Limpar a ficha</button>`;
+  pintarSomasFicha();
+}
+function aoEditarFicha(el) {
+  const caminho = el.dataset.f; if (!caminho || !FICHA) return;
+  const partes = caminho.split('.'); let alvo = FICHA;
+  for (let i = 0; i < partes.length - 1; i++) alvo = alvo[partes[i]];
+  alvo[partes[partes.length - 1]] = el.value;
+  cofre.gravar('ficha', FICHA);
+  pintarSomasFicha();
+}
+/* Cartão de decisão em tela cheia: a equipe escolhe em segredo, segura o aparelho virado e mostra no "já". */
+let travaTela = null;
+function mostrarCartao(tipo) {
+  const [palavra, frase, seta] = tipo === 'c'
+    ? ['Continuar', 'Ficamos em campo', '<path d="M8 30h42M34 12l18 18-18 18"/>']
+    : ['Retornar', 'Garantimos os pontos', '<path d="M22 14L8 28l14 14"/><path d="M10 28h26a14 14 0 0 1 0 28H24"/>'];
+  const nome = FICHA && FICHA.equipe.trim();
+  const c = document.createElement('button');
+  c.type = 'button'; c.className = 'cartao-cheio ' + tipo;
+  c.setAttribute('aria-label', `Cartão ${palavra}. Toque para fechar.`);
+  c.innerHTML = `<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${seta}</svg><b>${palavra}</b><span>${nome ? esc(nome) : frase}</span><i>Toque para fechar</i>`;
+  c.addEventListener('click', () => { c.remove(); if (travaTela) { travaTela.release().catch(() => {}); travaTela = null; } });
+  document.body.append(c); c.focus();
+  // a palavra sempre cabe na largura da tela, qualquer que seja a fonte carregada
+  const b = c.querySelector('b'), limite = c.clientWidth * 0.88;
+  if (b.scrollWidth > limite) b.style.fontSize = (parseFloat(getComputedStyle(b).fontSize) * limite / b.scrollWidth) + 'px';
+  // mantém a tela acesa enquanto o cartão está no ar, quando o aparelho permite
+  if (navigator.wakeLock) navigator.wakeLock.request('screen').then(t => { travaTela = t; }).catch(() => {});
+}
 
 /* ---------- QR code do app (padrão do BACCHI LAB) ---------- */
 /* O desenho do QR é fixo (src/qr.svg, embutido pelo build): aponta para o endereço do app no ar, mesmo quando a página é aberta de outro lugar. */
@@ -1683,11 +1841,12 @@ if (PWA) {
 /* ---------- capa e partida em andamento ---------- */
 function iniciar(dados) {
   pintarNomes();
-  if (dados && dados.G && dados.G.v === 3) { G = dados.G; ir(dados.tela === 'fim' || G.fase === 'fim' ? 'fim' : dados.tela === 'jogo' ? 'jogo' : 'capa'); }
+  const naFicha = location.hash === '#equipe' || (dados && dados.tela === 'equipe');
+  if (dados && dados.G && dados.G.v === 3) { G = dados.G; ir(naFicha ? 'equipe' : dados.tela === 'fim' || G.fase === 'fim' ? 'fim' : dados.tela === 'jogo' ? 'jogo' : 'capa'); }
   else {
     const salvo = cofre.ler('partida');
     if (salvo && salvo.G && salvo.G.v === 3) { G = salvo.G; HIST.push(...(salvo.hist || [])); }
-    ir('capa');
+    ir(naFicha ? 'equipe' : 'capa');
   }
 }
 const quente = window.claude && window.claude.hot;

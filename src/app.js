@@ -383,6 +383,9 @@ function ir(nome) {
   if (nome === 'jogo') pintar(true);
   if (nome === 'fim') pintarFim();
   if (nome === 'baralho') pintarGaleria();
+  if (nome === 'equipe') pintarFichaEquipe();
+  // o endereço com #equipe abre direto na ficha (é o que o QR code da ficha usa)
+  try { history.replaceState(null, '', nome === 'equipe' ? '#equipe' : location.pathname + location.search); } catch (_) { /* sem acesso ao histórico */ }
   const t = $('#tela-' + nome); if (t) t.scrollTop = 0;
 }
 function abrirFicha(id) {
@@ -440,6 +443,7 @@ const REGRAS = [
       <li><b>Decisão simultânea.</b> Cada equipe recebe dois cartões, um de CONTINUAR e um de RETORNAR. A equipe escolhe em segredo e segura o cartão virado para baixo. Use o botão “Contar 3, 2, 1” e peça que todas levantem ao mesmo tempo. Se as equipes anunciam uma de cada vez, a última leva vantagem.</li>
       <li><b>Palpites.</b> Nas pausas, pergunte a cada equipe e digite os valores. Peça que anotem o palpite na ficha de campo antes de responder, para ninguém se guiar pela resposta dos outros. A tecla Tab passa de uma equipe para a outra.</li>
       <li><b>Placar oculto.</b> A mesa mostra a divisão de cada carta, os dados provisórios e os dados pendentes, mas não o total de cada equipe. Cada equipe anota o seu. O botão “Mostrar placar” revela os totais quando você quiser.</li>
+      <li><b>Sem impressão.</b> O botão “QR da ficha” mostra um QR code para as equipes abrirem, no celular ou tablet, a ficha de campo digital e os cartões de CONTINUAR e RETORNAR em tela cheia. A ficha fica só no aparelho da equipe; nada é enviado a você.</li>
       <li><b>Errou o toque?</b> “Desfazer” volta uma ação.</li>
       ${PWA ? '<li><b>Material impresso.</b> O <a href="kit/Protocolo-Zero-kit-de-sala.pdf" target="_blank" rel="noopener">kit de sala (PDF)</a> traz os cartões de CONTINUAR e RETORNAR, no tamanho de carta padrão, e a ficha de campo das equipes.</li>' : ''}
       <li><b>Fechou a aba sem querer?</b> A partida fica salva neste aparelho a cada jogada. Ao reabrir, use “Continuar a partida” na tela inicial.</li>
@@ -952,6 +956,13 @@ const ATOS = {
   volto() { G.marc = [0, ...botsQueSaem()]; aoConfirmar(); },
   bots() { G.marc = botsQueSaem(); aoConfirmar(); },
   proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') ir('fim'); else pintar(true); },
+  'qr-equipe'() { $('#qr-equipe').showModal(); },
+  'ficha-limpar'() {
+    const b = $('#ficha-limpar');
+    if (b.dataset.certeza) { cofre.gravar('ficha', null); FICHA = null; $('#ficha').innerHTML = ''; return pintarFichaEquipe(); }
+    b.dataset.certeza = '1'; b.textContent = 'Toque de novo para apagar tudo';
+    setTimeout(() => { if (b.isConnected) { delete b.dataset.certeza; b.textContent = 'Limpar a ficha'; } }, 3500);
+  },
   'de-novo'() { if (G.modo === 'solo') novoSolo(); else ir('preparo'); },
   'trocar-ok'() { $('#trocar').close(); const f = pendente; pendente = null; if (f) f(); }
 };
@@ -961,6 +972,7 @@ document.addEventListener('click', e => {
   if ((el = quer('[data-fechar]'))) return el.closest('dialog').close();
   if ((el = quer('[data-ir]'))) { const d = el.closest('dialog'); if (d) d.close(); return ir(el.dataset.ir); }
   if (quer('[data-solo]')) return comecar(novoSolo);
+  if ((el = quer('[data-cartao]'))) return mostrarCartao(el.dataset.cartao);
   if ((el = quer('[data-regras]'))) return abrirRegras(el.dataset.regras);
   if ((el = quer('[data-ato]'))) return ATOS[el.dataset.ato]();
   if ((el = quer('[data-eq]'))) {
@@ -974,6 +986,7 @@ document.addEventListener('click', e => {
   if ((el = quer('[data-abrir]')) && !ocupado) return abrirFicha(el.dataset.abrir);
 });
 document.addEventListener('input', e => {
+  if (e.target.closest('#ficha')) return aoEditarFicha(e.target);
   if (e.target.matches('[data-pal],[data-ven]')) {
     const ok = $('#pal-ok');
     if (ok) ok.disabled = !$$('[data-pal],[data-ven]').some(el => el.value.trim() !== '' && +el.value >= 0 && +el.value <= 100);
@@ -990,6 +1003,80 @@ function mostrarDica(e) {
 }
 document.addEventListener('pointermove', mostrarDica);
 document.addEventListener('pointerdown', mostrarDica);
+
+/* ---------- ficha da equipe (celular ou tablet, quando não dá para imprimir) ----------
+   É a ficha de campo do kit em versão digital: fica salva só no aparelho da equipe (nada vai para o professor)
+   e soma os pontos sozinha. Os dois botões do rodapé mostram o cartão de decisão em tela cheia. */
+let FICHA = null;
+const fichaVazia = () => ({ equipe: '', bonus: '', exp: Array.from({ length: 5 }, () => ({ regiao: '', pal: ['', '', '', '', ''], prov: '', pend: '', desc: '', vencer: '' })) });
+const numero = v => { const n = parseFloat(String(v).replace(',', '.')); return Number.isFinite(n) ? n : 0; };
+function somasFicha() {
+  let total = 0;
+  const linhas = FICHA.exp.map(x => { const usado = [x.prov, x.pend, x.desc].some(v => String(v).trim() !== ''); const g = numero(x.prov) + numero(x.pend) + numero(x.desc); total += g; return { usado, g, total }; });
+  return { linhas, final: total + numero(FICHA.bonus) };
+}
+function pintarSomasFicha() {
+  const s = somasFicha();
+  s.linhas.forEach((l, e) => {
+    $(`#f-gar-${e}`).textContent = l.usado ? l.g : '–';
+    $(`#f-tot-${e}`).textContent = l.total;
+    $(`#f-res-${e}`).textContent = l.usado ? `${l.g} ${l.g === 1 ? 'ponto' : 'pontos'}` : '';
+  });
+  $('#f-tot-fim').textContent = s.linhas[4].total; $('#f-final').textContent = s.final;
+}
+function pintarFichaEquipe() {
+  const f = $('#ficha');
+  if (f.childElementCount) return;
+  const salva = cofre.ler('ficha');
+  FICHA = salva && Array.isArray(salva.exp) && salva.exp.length === 5 ? salva : fichaVazia();
+  const v = x => esc(x == null ? '' : x);
+  const aberta = Math.max(0, FICHA.exp.findIndex(x => ![x.prov, x.pend, x.desc].some(y => String(y).trim() !== '')));
+  const num = (id, rot, campo, val, extra = '') => `<label class="f-num" for="${id}">${rot}<input type="number" id="${id}" data-f="${campo}" value="${v(val)}" min="0" inputmode="decimal" placeholder="–"${extra}></label>`;
+  f.innerHTML = `<label class="f-campo" for="f-equipe">Nome da equipe<input type="text" id="f-equipe" data-f="equipe" maxlength="24" value="${v(FICHA.equipe)}" placeholder="Equipe"></label>
+    ${FICHA.exp.map((x, e) => `<details class="f-exp"${e === aberta ? ' open' : ''}>
+      <summary>Expedição ${e + 1}<small id="f-res-${e}"></small></summary>
+      <div class="f-corpo">
+        <label class="f-campo" for="f-reg-${e}">Região<select id="f-reg-${e}" data-f="exp.${e}.regiao"><option value="">–</option>${REGIOES.map(r => `<option${x.regiao === r.nome ? ' selected' : ''}>${r.nome}</option>`).join('')}</select></label>
+        <div><p class="f-rot">Palpites de risco (%) · um a cada perigo novo</p>
+          <div class="f-linha">${x.pal.map((p, k) => num(`f-pal-${e}-${k}`, `${k + 1}º alerta`, `exp.${e}.pal.${k}`, p, ' max="100"')).join('')}</div></div>
+        <div><p class="f-rot">Pontos · preencha quando a equipe retornar</p>
+          <div class="f-conta">${num(`f-prov-${e}`, 'Provisórios ao retornar', `exp.${e}.prov`, x.prov)}${num(`f-pend-${e}`, 'Pendentes', `exp.${e}.pend`, x.pend)}${num(`f-desc-${e}`, 'Descoberta', `exp.${e}.desc`, x.desc)}</div></div>
+        <div class="f-saida"><div class="tile"><small>Garantidos</small><b id="f-gar-${e}">–</b></div><div class="tile total"><small>Total até aqui</small><b id="f-tot-${e}">0</b></div>
+          ${e < 4 ? num(`f-ven-${e}`, 'Vencer (%)', `exp.${e}.vencer`, x.vencer, ' max="100"') : '<span></span>'}</div>
+      </div></details>`).join('')}
+    <div class="f-fim"><div class="tile total"><small>Total das 5 expedições</small><b id="f-tot-fim">0</b></div>${num('f-bonus', 'Bônus de palpites', 'bonus', FICHA.bonus)}</div>
+    <div class="tile"><small>Pontuação final</small><b id="f-final">0</b></div>
+    <p class="ajuda">Se um perigo encerrar a expedição com a equipe em campo, deixe os pontos em branco: os garantidos são 0. A ficha fica salva neste aparelho.</p>
+    <button class="btn" type="button" id="ficha-limpar" data-ato="ficha-limpar">Limpar a ficha</button>`;
+  pintarSomasFicha();
+}
+function aoEditarFicha(el) {
+  const caminho = el.dataset.f; if (!caminho || !FICHA) return;
+  const partes = caminho.split('.'); let alvo = FICHA;
+  for (let i = 0; i < partes.length - 1; i++) alvo = alvo[partes[i]];
+  alvo[partes[partes.length - 1]] = el.value;
+  cofre.gravar('ficha', FICHA);
+  pintarSomasFicha();
+}
+/* Cartão de decisão em tela cheia: a equipe escolhe em segredo, segura o aparelho virado e mostra no "já". */
+let travaTela = null;
+function mostrarCartao(tipo) {
+  const [palavra, frase, seta] = tipo === 'c'
+    ? ['Continuar', 'Ficamos em campo', '<path d="M8 30h42M34 12l18 18-18 18"/>']
+    : ['Retornar', 'Garantimos os pontos', '<path d="M22 14L8 28l14 14"/><path d="M10 28h26a14 14 0 0 1 0 28H24"/>'];
+  const nome = FICHA && FICHA.equipe.trim();
+  const c = document.createElement('button');
+  c.type = 'button'; c.className = 'cartao-cheio ' + tipo;
+  c.setAttribute('aria-label', `Cartão ${palavra}. Toque para fechar.`);
+  c.innerHTML = `<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${seta}</svg><b>${palavra}</b><span>${nome ? esc(nome) : frase}</span><i>Toque para fechar</i>`;
+  c.addEventListener('click', () => { c.remove(); if (travaTela) { travaTela.release().catch(() => {}); travaTela = null; } });
+  document.body.append(c); c.focus();
+  // a palavra sempre cabe na largura da tela, qualquer que seja a fonte carregada
+  const b = c.querySelector('b'), limite = c.clientWidth * 0.88;
+  if (b.scrollWidth > limite) b.style.fontSize = (parseFloat(getComputedStyle(b).fontSize) * limite / b.scrollWidth) + 'px';
+  // mantém a tela acesa enquanto o cartão está no ar, quando o aparelho permite
+  if (navigator.wakeLock) navigator.wakeLock.request('screen').then(t => { travaTela = t; }).catch(() => {});
+}
 
 /* ---------- QR code do app (padrão do BACCHI LAB) ---------- */
 /* O desenho do QR é fixo (src/qr.svg, embutido pelo build): aponta para o endereço do app no ar, mesmo quando a página é aberta de outro lugar. */
@@ -1061,11 +1148,12 @@ if (PWA) {
 /* ---------- capa e partida em andamento ---------- */
 function iniciar(dados) {
   pintarNomes();
-  if (dados && dados.G && dados.G.v === 3) { G = dados.G; ir(dados.tela === 'fim' || G.fase === 'fim' ? 'fim' : dados.tela === 'jogo' ? 'jogo' : 'capa'); }
+  const naFicha = location.hash === '#equipe' || (dados && dados.tela === 'equipe');
+  if (dados && dados.G && dados.G.v === 3) { G = dados.G; ir(naFicha ? 'equipe' : dados.tela === 'fim' || G.fase === 'fim' ? 'fim' : dados.tela === 'jogo' ? 'jogo' : 'capa'); }
   else {
     const salvo = cofre.ler('partida');
     if (salvo && salvo.G && salvo.G.v === 3) { G = salvo.G; HIST.push(...(salvo.hist || [])); }
-    ir('capa');
+    ir(naFicha ? 'equipe' : 'capa');
   }
 }
 const quente = window.claude && window.claude.hot;

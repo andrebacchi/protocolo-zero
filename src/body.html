@@ -12,7 +12,6 @@
   <header class="abre">
     <div class="capa-arte" role="img" aria-label="Uma equipe de campo, de costas, entre a tenda iluminada e a cidade ao pôr do sol"></div>
     <div class="abre-texto">
-      <img class="logo" src="icons/icone.webp" alt="" width="56" height="56">
       <p class="sobre">Jogo de André D. Bacchi</p>
       <h1>Protocolo <em>Zero</em></h1>
       <p class="sub">Uma investigação epidemiológica para quem sabe a hora de voltar</p>
@@ -36,6 +35,10 @@
         <button class="modo" type="button" data-ir="preparo">
           <b>Painel do professor</b><span class="selo">Abrir</span>
           <small>Projete a tela. De 3 a 8 equipes decidem ao mesmo tempo e você marca quem retorna. Os alunos não precisam de celular.</small>
+        </button>
+        <button class="modo" type="button" data-ir="equipe">
+          <b>Ficha da equipe</b><span class="selo">Abrir</span>
+          <small>Para o celular ou tablet de cada equipe, quando não der para imprimir: ficha de campo que soma sozinha e cartões de CONTINUAR e RETORNAR em tela cheia.</small>
         </button>
       </div>
       <div class="grupo">
@@ -86,6 +89,7 @@
     <label class="opcao"><input type="checkbox" id="op-placar" checked><span>Placar oculto</span>
       <small>A tela mostra a divisão de cada carta e os dados pendentes, mas não o total de cada equipe. Cada equipe anota o seu. Você pode mostrar o placar quando quiser.</small></label>
     <p class="ajuda" id="kit-linha" hidden>Antes da aula, imprima o <a href="kit/Protocolo-Zero-kit-de-sala.pdf" target="_blank" rel="noopener">kit de sala (PDF)</a>: cartões de CONTINUAR e RETORNAR e a ficha de campo das equipes.</p>
+    <p class="ajuda">Sem impressão? <button class="elo" type="button" data-ato="qr-equipe">Mostre o QR code da ficha digital</button>: cada equipe abre no celular a ficha de campo e os cartões de CONTINUAR e RETORNAR.</p>
     <button class="btn principal grande" type="submit">Começar a investigação</button>
   </form>
 </section>
@@ -95,6 +99,7 @@
     <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
     <h2 id="j-titulo">Expedição 1 de 5</h2>
     <div class="barra-lado">
+      <button class="btn-liso so-projetor" type="button" data-ato="qr-equipe">QR da ficha</button>
       <button class="btn-liso" type="button" data-regras="jogo">Regras</button>
       <button class="btn-liso" type="button" id="desfazer" aria-label="Desfazer a última ação" title="Desfazer a última ação" disabled><span class="so-largo">Desfazer</span><span class="so-estreito" aria-hidden="true">↶</span></button>
     </div>
@@ -126,6 +131,20 @@
     <div class="barra-lado"><button class="btn-liso" type="button" data-regras="percebido">Regras</button></div>
   </header>
   <div class="miolo fim" id="fim"></div>
+</section>
+
+<section class="tela" id="tela-equipe" hidden>
+  <header class="barra">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2>Ficha da equipe</h2>
+    <div class="barra-lado"><button class="btn-liso" type="button" data-regras="jogo">Regras</button></div>
+  </header>
+  <div class="ficha"><form class="ficha-miolo" id="ficha" autocomplete="off"></form></div>
+  <div class="cartoes-barra">
+    <p>Na hora de decidir, escolha em segredo e mostre a tela no “já”:</p>
+    <button class="btn-cartao c" type="button" data-cartao="c">Continuar</button>
+    <button class="btn-cartao r" type="button" data-cartao="r">Retornar</button>
+  </div>
 </section>
 
 <section class="tela" id="tela-baralho" hidden>
@@ -172,6 +191,18 @@
     <p class="qr-end" id="qr-end">andrebacchi.github.io/protocolo-zero</p>
     <div class="qr-acoes"><button class="btn principal" type="button" id="qr-copiar">Copiar link</button><button class="btn" type="button" id="qr-partilhar" hidden>Compartilhar</button></div>
     <p class="fonte">Aponte a câmera do celular para o código. QR Code é marca registrada da DENSO WAVE INCORPORATED.</p>
+  </div>
+</dialog>
+
+<dialog class="qr" id="qr-equipe" lang="pt-BR" aria-label="QR code da ficha da equipe">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo qr-corpo">
+    <p class="chapa">Para as equipes · celular ou tablet</p>
+    <h3>Ficha da equipe</h3>
+    <div class="qr-quadro">__QR_EQUIPE__</div>
+    <p class="qr-end" id="qr-equipe-end">andrebacchi.github.io/protocolo-zero/#equipe</p>
+    <p>Cada equipe abre em um aparelho: ficha de campo que soma os pontos e cartões de CONTINUAR e RETORNAR em tela cheia.</p>
+    <p class="fonte">A ficha fica salva só no aparelho da equipe. Nada é enviado ao professor: os palpites continuam sendo ditos em voz alta.</p>
   </div>
 </dialog>
 

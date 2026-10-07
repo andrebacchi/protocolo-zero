@@ -6,10 +6,11 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
 ## Estrutura
 
 - `src/` é a fonte. `sh build.sh` gera `index.html` e `sw.js` na raiz (os dois são arquivos gerados: não edite à mão).
-  `sh build.sh artifact` gera `dist/artifact.html`, para pré-visualizar como artefato (sem instalação nem service worker; publique junto `cards/`, `regioes/` e `icons/icone.webp`).
+  `sh build.sh artifact` gera `dist/artifact.html`, para pré-visualizar como artefato (sem instalação nem service worker; publique junto `cards/` e `regioes/`).
 - `cards/`: 25 cartas, verso e capa (600 × 840, WebP; capa em 1600 px). `regioes/`: paisagem de cada região (N, NE, CO, SE, S). `icons/`: ícones do app.
 - `kit/Protocolo-Zero-kit-de-sala.pdf`: material impresso. A fonte é `tools/kit.html`; `tools/kit-pdf.mjs` gera o PDF (instruções no próprio arquivo).
 - `src/qr.svg`: QR code do endereço do app, embutido pelo build (botão "QR code" da capa). É fixo; `tools/qr.cjs` mostra como foi gerado com o `qrcode.js` do repositório `bacchilab`.
+- `src/qr-equipe.svg`: QR code de `…/protocolo-zero/#equipe`, que abre direto na ficha da equipe (botão "QR da ficha" do painel do professor).
 - `tools/mapa.py`: gerou os contornos dos estados a partir de um GeoJSON aberto (Code for America, click_that_hood), simplificado com mapshaper.
 
 ## Toda atualização
@@ -42,8 +43,11 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
   Fontes: Saira Condensed (títulos), Saira Stencil One (carimbos), Public Sans (texto), IBM Plex Mono (rótulos e números).
 - **Estado:** tudo em `G` (`src/app.js`). `salvar()` empilha o estado para o Desfazer; `gravarPartida()` grava no aparelho a cada jogada
   (localStorage, prefixo `protocolo-zero:`), e a capa oferece "Continuar a partida". `G.v` é a versão do formato: aumente se mudar a estrutura, para descartar partidas salvas antigas.
+- **Ficha da equipe (`#equipe`):** versão digital da ficha de campo e dos cartões de decisão, para o celular de cada equipe quando não dá para imprimir.
+  Sem servidor: a ficha fica no aparelho (localStorage `protocolo-zero:ficha`) e nada chega ao professor, que continua digitando os palpites ditos em voz alta.
+  O André não quis o ícone do app na capa.
 - **Revelar carta (`apresentar`):** não use `fill: 'forwards'` encadeado; a posição de palco vai no estilo da carta e é limpa no fim (com fill, a carta às vezes ficava presa ampliada).
-- **Service worker:** apaga só os caches com prefixo `protocolo-zero-` (todos os apps dividem a origem `andrebacchi.github.io`). As 33 imagens são guardadas em segundo plano na primeira visita.
+- **Service worker:** apaga só os caches com prefixo `protocolo-zero-` (todos os apps dividem a origem `andrebacchi.github.io`). As 32 imagens são guardadas em segundo plano na primeira visita.
 
 ## Pendências
 
