@@ -779,7 +779,11 @@ function prepararExp() {
   const b = DADOS.map(d => d.id);
   for (const p of PERIGOS) for (let i = 0; i < G.pool[p.id]; i++) b.push(p.id);
   b.push(...G.achPool);
-  G.baralho = embaralhar(b);
+  /* A primeira carta nunca é um perigo: ela é sorteada entre coletas e descobertas, e o resto do monte é embaralhado
+     normalmente. As cartas saem do fim da lista, então a primeira vai por último. */
+  const seguras = b.map((id, i) => (id[0] === 'P' ? -1 : i)).filter(i => i >= 0);
+  const primeira = b.splice(um(seguras), 1)[0];
+  G.baralho = [...embaralhar(b), primeira];
   G.comp = { perigos: { ...G.pool }, achados: [...G.achPool], total: b.length };
   G.trilha = []; G.vistos = {}; G.sobras = 0; G.marc = [];
   G.equipes.forEach(e => { e.risco = 0; e.st = 'campo'; e.perdido = 0; e.ult = 0; });
@@ -798,7 +802,10 @@ function simular(n = 3000) {
       ach.push(ACHADOS[e].id);
       const deck = [...base, ...ach];
       for (const p of PERIGOS) for (let i = 0; i < pool[p.id]; i++) deck.push(p.id);
+      const seg = []; for (let i = 0; i < deck.length; i++) if (deck[i][0] !== 'P') seg.push(i);
+      const prim = deck.splice(seg[Math.floor(Math.random() * seg.length)], 1)[0];   // a primeira carta nunca é um perigo
       for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)), t = deck[i]; deck[i] = deck[j]; deck[j] = t; }
+      deck.push(prim);
       const risco = new Array(k).fill(0), dentro = new Array(k).fill(true), vistos = {};
       let nDentro = k, aberto = 0, livres = [], fatal = false;
       while (deck.length && nDentro) {
@@ -999,6 +1006,7 @@ const REGRAS = [
       <li><b>Quem retorna</b> transforma os dados provisórios em pontos garantidos e divide os dados pendentes. Não joga mais até a próxima expedição.</li>
       <li><b>Quem continua</b> pode juntar mais dados provisórios, mas perde todos se um perigo encerrar a expedição.</li>
     </ol>
+    <p>A primeira carta de cada expedição nunca é um perigo, para que toda equipe já tenha algo em jogo na primeira decisão. Daí em diante, a ordem das cartas é aleatória.</p>
     <p>A expedição termina quando um perigo aparece pela segunda vez ou quando todas as equipes retornaram. Vence quem tiver mais pontos garantidos ao fim das cinco, somado o bônus de palpites quando ele está ligado.</p>
     <p class="caixa"><b>Retornar sozinho compensa.</b> A equipe que volta sozinha fica com todos os dados pendentes e registra as descobertas importantes que estiverem livres. Se duas ou mais voltam juntas, dividem os dados pendentes e ninguém leva a descoberta.</p>`],
   ['cartas', 'As cartas', () => `
@@ -1012,6 +1020,7 @@ const REGRAS = [
   ['conta', 'A conta da probabilidade', () => `
     <p>O risco de a próxima carta encerrar a expedição é uma contagem:</p>
     <p class="caixa"><code>risco = cartas fatais no monte ÷ cartas no monte</code><br>Carta fatal é a de um perigo que já apareceu uma vez nesta expedição.</p>
+    <p>A regra de a primeira carta não ser um perigo não muda essa conta: depois que a primeira carta é revelada, o resto do monte está em ordem aleatória.</p>
     <p><b>Exemplo.</b> Primeira expedição, 31 cartas. Quatro foram reveladas, e entre elas apareceram dois perigos diferentes. Restam 27 cartas no monte, e 4 delas são fatais (duas de cada perigo já visto): 4 ÷ 27 = 14,8%.</p>
     <p>O baralho não tem reposição: cada carta revelada muda a composição do monte e, com ela, a probabilidade. A mesa mostra o que é preciso para contar: quantas cartas há no monte e quantas de cada perigo já saíram.</p>
     <p>O <b>ganho esperado</b> da próxima carta, para cada equipe em campo, é a soma do que cada carta do monte renderia para a equipe, dividida pelo número de cartas do monte.</p>`],

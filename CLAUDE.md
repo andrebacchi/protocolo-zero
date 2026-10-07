@@ -26,6 +26,7 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
   em ordem fixa: Paciente 0 (5), Fonte da exposição (7), Via de transmissão (10), Agente isolado (12), Genoma sequenciado (15).
 - Vocabulário: "coleta de dados", "descoberta importante", "dados provisórios" (o que a equipe juntou e ainda pode perder) e "dados pendentes" (o resto das divisões).
   Escreva "probabilidade", não "chance".
+- A primeira carta de cada expedição nunca é um perigo (sorteada entre coletas e descobertas); o resto do monte é aleatório. Vale também na simulação.
 - Cinco expedições, uma por região do Brasil, em ordem sorteada. As regiões são só cenário: não mudam baralho nem regras.
 - Placar oculto por padrão. O risco real nunca aparece durante a partida, só no relatório final, para as equipes não calibrarem os palpites pelo resultado anterior.
 - Palpite de risco: todas as equipes respondem a cada perigo novo (alerta), inclusive as que já retornaram. Bônus de 5, 3 e 1 ponto (`PREMIO`) para os menores erros absolutos médios;
