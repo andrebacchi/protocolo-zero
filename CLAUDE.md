@@ -9,6 +9,7 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
   `sh build.sh artifact` gera `dist/artifact.html`, para pré-visualizar como artefato (sem instalação nem service worker; publique junto `cards/`, `regioes/` e `icons/icone.webp`).
 - `cards/`: 25 cartas, verso e capa (600 × 840, WebP; capa em 1600 px). `regioes/`: paisagem de cada região (N, NE, CO, SE, S). `icons/`: ícones do app.
 - `kit/Protocolo-Zero-kit-de-sala.pdf`: material impresso. A fonte é `tools/kit.html`; `tools/kit-pdf.mjs` gera o PDF (instruções no próprio arquivo).
+- `src/qr.svg`: QR code do endereço do app, embutido pelo build (botão "QR code" da capa). É fixo; `tools/qr.cjs` mostra como foi gerado com o `qrcode.js` do repositório `bacchilab`.
 - `tools/mapa.py`: gerou os contornos dos estados a partir de um GeoJSON aberto (Code for America, click_that_hood), simplificado com mapshaper.
 
 ## Toda atualização

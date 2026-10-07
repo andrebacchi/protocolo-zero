@@ -4,7 +4,10 @@
 <div class="miolo capa">
   <div class="topo">
     <a class="marca" href="__HUB__"__HUB_ALVO__>‹ BACCHI LAB</a>
-    <button class="btn pilula" type="button" id="instalar-btn" hidden>Instalar</button>
+    <div class="topo-lado">
+      <button class="btn pilula" type="button" id="qr-btn">QR code</button>
+      <button class="btn pilula" type="button" id="instalar-btn" hidden>Instalar</button>
+    </div>
   </div>
   <header class="abre">
     <div class="capa-arte" role="img" aria-label="Uma equipe de campo, de costas, entre a tenda iluminada e a cidade ao pôr do sol"></div>
@@ -157,6 +160,18 @@
     <h3>Começar outra apaga a atual</h3>
     <p id="trocar-info"></p>
     <div class="abre-acoes"><button class="btn principal" type="button" data-ir="jogo">Continuar a partida</button><button class="btn alerta" type="button" data-ato="trocar-ok">Começar outra</button></div>
+  </div>
+</dialog>
+
+<dialog class="qr" id="qr" lang="pt-BR" aria-label="QR code do Protocolo Zero">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo qr-corpo">
+    <p class="chapa">Abra no seu celular</p>
+    <h3>Protocolo Zero</h3>
+    <div class="qr-quadro">__QR__</div>
+    <p class="qr-end" id="qr-end">andrebacchi.github.io/protocolo-zero</p>
+    <div class="qr-acoes"><button class="btn principal" type="button" id="qr-copiar">Copiar link</button><button class="btn" type="button" id="qr-partilhar" hidden>Compartilhar</button></div>
+    <p class="fonte">Aponte a câmera do celular para o código. QR Code é marca registrada da DENSO WAVE INCORPORATED.</p>
   </div>
 </dialog>
 

@@ -4,10 +4,10 @@
   python3 build.py artifact   -> dist/artifact.html (página para publicar como artefato, sem instalação)
 As imagens ficam em cards/ e regioes/ e são referenciadas por caminho relativo.
 A cada atualização publicada, aumente VERSAO: ela aparece no rodapé e renova o cache de quem instalou o app."""
-import glob, json, os, sys
+import glob, json, os, re, sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-VERSAO = '1.0'
+VERSAO = '1.1'
 FIXOS = 'protocolo-zero-fixos-v1'   # cache das imagens e fontes; só mude se as imagens mudarem
 SITE = 'https://andrebacchi.github.io/protocolo-zero/'
 HUB = 'https://andrebacchi.github.io/bacchilab/'
@@ -36,6 +36,7 @@ js = (ler('app.js')
       .replace('__IMAGENS__', json.dumps(imagens)))
 corpo = (ler('body.html')
          .replace('__VERSAO__', VERSAO)
+         .replace('__QR__', re.sub(r'>\s+<', '><', ler('qr.svg').strip()).replace('<svg ', '<svg role="img" aria-label="QR code para andrebacchi.github.io/protocolo-zero" '))
          .replace('__HUB__', HUB)
          .replace('__HUB_ALVO__', ' target="_blank" rel="noopener"' if ARTEFATO else ''))
 assert '__' not in corpo.replace('__proto__', ''), 'sobrou marcador sem substituir em body.html'
