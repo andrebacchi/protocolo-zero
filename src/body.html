@@ -1,0 +1,176 @@
+<div class="app" id="app" lang="pt-BR">
+
+<main class="tela" id="tela-capa">
+<div class="miolo capa">
+  <div class="topo">
+    <a class="marca" href="__HUB__"__HUB_ALVO__>‹ BACCHI LAB</a>
+    <button class="btn pilula" type="button" id="instalar-btn" hidden>Instalar</button>
+  </div>
+  <header class="abre">
+    <div class="capa-arte" role="img" aria-label="Uma equipe de campo, de costas, entre a tenda iluminada e a cidade ao pôr do sol"></div>
+    <div class="abre-texto">
+      <img class="logo" src="icons/icone.webp" alt="" width="56" height="56">
+      <p class="sobre">Jogo de André D. Bacchi</p>
+      <h1>Protocolo <em>Zero</em></h1>
+      <p class="sub">Uma investigação epidemiológica para quem sabe a hora de voltar</p>
+      <p class="lide">Uma doença desconhecida avança pelas cinco regiões do Brasil. A cada carta, sua equipe decide: garante os dados que já tem ou fica em campo por mais uma coleta? A probabilidade de perder tudo muda a cada carta, e o jogo mostra se o seu palpite acompanha a conta.</p>
+      <div class="abre-acoes">
+        <button class="btn principal grande" type="button" data-ir="preparo">Jogar na sala de aula</button>
+        <button class="btn grande" type="button" data-solo>Jogar sozinho</button>
+        <button class="btn retomar" type="button" id="continuar" data-ir="jogo" hidden>Continuar a partida</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="modos-secao" aria-labelledby="titulo-modos">
+    <div class="modos-topo">
+      <h2 id="titulo-modos">Como jogar</h2>
+      <button class="btn" type="button" data-regras="">Saiba mais</button>
+    </div>
+    <div class="modos">
+      <div class="grupo">
+        <h3>Para a sala de aula</h3>
+        <button class="modo" type="button" data-ir="preparo">
+          <b>Painel do professor</b><span class="selo">Abrir</span>
+          <small>Projete a tela. De 3 a 8 equipes decidem ao mesmo tempo e você marca quem retorna. Os alunos não precisam de celular.</small>
+        </button>
+      </div>
+      <div class="grupo">
+        <h3>Para jogar sozinho</h3>
+        <button class="modo" type="button" data-solo>
+          <b>Expedição solo</b><span class="selo">Abrir</span>
+          <small>Você contra três equipes automáticas, cada uma com um jeito de lidar com o risco.</small>
+        </button>
+        <button class="modo" type="button" data-ir="baralho">
+          <b>O baralho</b><span class="selo">Abrir</span>
+          <small>As 35 cartas, o código de cada arte e o que cada uma significa.</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    <p>Mecânica de <i>push your luck</i> inspirada em <cite>Diamant</cite> / <cite>Incan Gold</cite> (Tesouro Inca), de Alan R. Moon e Bruno Faidutti. Tema, cartas e textos são originais.</p>
+    <p>O surto, a doença e o agente são fictícios. Contornos dos estados simplificados a partir de dados abertos (Code for America, <cite>click_that_hood</cite>). Uso educacional.</p>
+    <p>© André Demambre Bacchi. Todos os direitos reservados.</p>
+    <p class="versao">Versão __VERSAO__</p>
+  </footer>
+</div>
+</main>
+
+<section class="tela" id="tela-preparo" hidden>
+  <header class="barra fixa">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2>Painel do professor</h2>
+    <div class="barra-lado"><button class="btn-liso" type="button" data-regras="sala">Regras</button></div>
+  </header>
+  <form class="miolo preparo" id="preparo">
+    <p class="chapa">Antes de começar</p>
+    <h3>Quantas equipes vão a campo?</h3>
+    <div class="passo-n">
+      <button class="redondo" type="button" id="menos" aria-label="Uma equipe a menos">−</button>
+      <output id="n-equipes" for="menos mais">6</output>
+      <button class="redondo" type="button" id="mais" aria-label="Uma equipe a mais">+</button>
+      <span class="ajuda">De 3 a 8. Os nomes podem ser trocados.</span>
+    </div>
+    <div class="nomes" id="nomes"></div>
+    <label class="opcao"><input type="checkbox" id="op-palpites" checked><span>Pausas de palpite, equipe por equipe</span>
+      <small>Sempre que surge um perigo novo, todas as equipes estimam a probabilidade de a próxima carta encerrar a expedição, inclusive as que já retornaram. O risco real só aparece no relatório final.</small></label>
+    <label class="opcao"><input type="checkbox" id="op-bonus" checked><span>Bônus para os melhores palpites</span>
+      <small>No fim da partida, as três equipes com menor erro médio nos palpites de risco ganham 5, 3 e 1 ponto. O bônus máximo vale o mesmo que a menor descoberta.</small></label>
+    <label class="opcao"><input type="checkbox" id="op-vencer" checked><span>Probabilidade de vencer, ao fim de cada expedição</span>
+      <small>Cada equipe diz qual é a sua probabilidade de vencer a partida. O relatório final compara as respostas com uma estimativa feita a partir do placar real.</small></label>
+    <label class="opcao"><input type="checkbox" id="op-placar" checked><span>Placar oculto</span>
+      <small>A tela mostra a divisão de cada carta e os dados pendentes, mas não o total de cada equipe. Cada equipe anota o seu. Você pode mostrar o placar quando quiser.</small></label>
+    <p class="ajuda" id="kit-linha" hidden>Antes da aula, imprima o <a href="kit/Protocolo-Zero-kit-de-sala.pdf" target="_blank" rel="noopener">kit de sala (PDF)</a>: cartões de CONTINUAR e RETORNAR e a ficha de campo das equipes.</p>
+    <button class="btn principal grande" type="submit">Começar a investigação</button>
+  </form>
+</section>
+
+<section class="tela" id="tela-jogo" hidden>
+  <header class="barra">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2 id="j-titulo">Expedição 1 de 5</h2>
+    <div class="barra-lado">
+      <button class="btn-liso" type="button" data-regras="jogo">Regras</button>
+      <button class="btn-liso" type="button" id="desfazer" aria-label="Desfazer a última ação" title="Desfazer a última ação" disabled><span class="so-largo">Desfazer</span><span class="so-estreito" aria-hidden="true">↶</span></button>
+    </div>
+  </header>
+  <div class="mesa" id="mesa">
+    <div class="briefing" id="briefing" hidden></div>
+    <div class="faixa" id="faixa">
+      <div class="mapa mini" id="mapa-mini" aria-hidden="true"></div>
+      <div class="onde"><h3 id="j-regiao"></h3><p id="j-doenca"></p></div>
+      <div class="monte" id="monte"><span class="pilha"></span><span>Monte <b id="j-monte">0</b></span></div>
+      <div class="sinais" id="sinais"></div>
+    </div>
+    <div class="placa" id="pe-trilha" aria-live="polite"></div>
+    <div class="trilha" id="trilha" aria-label="Cartas reveladas nesta expedição"></div>
+  </div>
+  <aside class="painel" aria-label="Equipes e decisões">
+    <div class="rola" id="rola">
+      <div class="equipes" id="equipes"></div>
+      <div class="fala" id="fala" aria-live="polite"></div>
+    </div>
+    <div class="acao" id="acao"></div>
+  </aside>
+</section>
+
+<section class="tela" id="tela-fim" hidden>
+  <header class="barra fixa">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2>Relatório da investigação</h2>
+    <div class="barra-lado"><button class="btn-liso" type="button" data-regras="percebido">Regras</button></div>
+  </header>
+  <div class="miolo fim" id="fim"></div>
+</section>
+
+<section class="tela" id="tela-baralho" hidden>
+  <header class="barra fixa">
+    <button class="btn-liso" type="button" data-ir="capa">‹ Início</button>
+    <h2>O baralho</h2>
+    <div class="barra-lado"><button class="btn-liso" type="button" data-regras="cartas">Regras</button></div>
+  </header>
+  <div class="miolo grade-topo" id="galeria"></div>
+</section>
+
+</div>
+
+<dialog id="ficha" lang="pt-BR" aria-label="Carta">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="ficha-corpo" id="ficha-corpo"></div>
+</dialog>
+
+<dialog id="regras" lang="pt-BR" aria-label="Saiba mais">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo" id="regras-corpo"></div>
+</dialog>
+
+<dialog id="agente" lang="pt-BR" aria-label="Agente isolado">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo" id="agente-corpo"></div>
+</dialog>
+
+<dialog id="trocar" lang="pt-BR" aria-label="Partida em andamento">
+  <div class="corpo" style="padding-top:30px">
+    <p class="chapa">Partida em andamento</p>
+    <h3>Começar outra apaga a atual</h3>
+    <p id="trocar-info"></p>
+    <div class="abre-acoes"><button class="btn principal" type="button" data-ir="jogo">Continuar a partida</button><button class="btn alerta" type="button" data-ato="trocar-ok">Começar outra</button></div>
+  </div>
+</dialog>
+
+<dialog id="instalar" lang="pt-BR" aria-label="Instalar o Protocolo Zero">
+  <div class="fechar-linha"><button class="btn fechar" type="button" data-fechar>Fechar</button></div>
+  <div class="corpo">
+    <p class="chapa">Aplicativo</p>
+    <h3>Instalar o Protocolo Zero</h3>
+    <p>O jogo fica na tela inicial como um aplicativo, abre em tela cheia e funciona sem internet depois da primeira visita.</p>
+    <p class="fora" id="instalar-fora" hidden>Você abriu este app por dentro de outro, como o BACCHI LAB, e daqui não dá para instalar. Toque em <kbd>⋮</kbd> no alto da tela e em <b>Abrir no Chrome</b>; lá, toque de novo em <b>Instalar</b>.</p>
+    <div class="abas" id="abas"></div>
+    <ol class="passos" id="passos"></ol>
+  </div>
+</dialog>
+
+<div id="dica" hidden></div>
+

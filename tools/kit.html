@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Protocolo Zero: kit de sala de aula</title>
+<style>
+@font-face{font-family:'Saira Condensed';font-weight:500;src:url('node_modules/@fontsource/saira-condensed/files/saira-condensed-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Saira Condensed';font-weight:600;src:url('node_modules/@fontsource/saira-condensed/files/saira-condensed-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Saira Condensed';font-weight:700;src:url('node_modules/@fontsource/saira-condensed/files/saira-condensed-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Saira Stencil One';font-weight:400;src:url('node_modules/@fontsource/saira-stencil-one/files/saira-stencil-one-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:400;src:url('node_modules/@fontsource/public-sans/files/public-sans-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:500;src:url('node_modules/@fontsource/public-sans/files/public-sans-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:700;src:url('node_modules/@fontsource/public-sans/files/public-sans-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;src:url('node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:600;src:url('node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2') format('woff2')}
+
+:root{--tinta:#0f1b2b;--cinza:#5b6a7d;--linha:#b9c3cf;--papel:#fff;--dado:#2bb3a3;--dado-escuro:#0f6f66;--perigo:#f0603a;--achado:#e8b23e;--achado-escuro:#8a6410;
+  --display:'Saira Condensed',sans-serif;--estencil:'Saira Stencil One',sans-serif;--texto:'Public Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;padding:0}
+body{font:10.5pt/1.45 var(--texto);color:var(--tinta)}
+h1,h2,h3,p,ol,ul{margin:0}
+.pagina{position:relative;width:210mm;height:297mm;padding:12mm;overflow:hidden;page-break-after:always;display:flex;flex-direction:column}
+.pagina:last-child{page-break-after:auto}
+.rotulo{font:500 7.5pt/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cinza)}
+.marca{font:400 11pt/1 var(--estencil);letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- 1. guia ---------- */
+.guia{gap:4.6mm}
+.guia header{display:flex;align-items:flex-end;justify-content:space-between;gap:8mm;padding-bottom:4mm;border-bottom:1.2mm solid var(--tinta)}
+.guia h1{font:700 44pt/.9 var(--display);letter-spacing:.01em;text-transform:uppercase}
+.guia h1 em{font-style:normal;color:var(--perigo)}
+.guia header p{max-width:62mm;text-align:right;font:600 12pt/1.2 var(--display);letter-spacing:.05em;text-transform:uppercase;color:var(--dado-escuro)}
+.guia h2{margin-bottom:2.2mm;font:700 15pt/1.1 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.pecas{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+.peca{display:grid;gap:1.2mm;align-content:start;padding:3.4mm 4mm;border:.35mm solid var(--linha);border-top:1.4mm solid var(--dado);border-radius:1mm}
+.peca.b{border-top-color:var(--perigo)}
+.peca.c{border-top-color:var(--achado)}
+.peca b{font:700 13pt/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.peca p{font-size:9.2pt;line-height:1.38}
+.regras{padding:4mm 5.5mm;border:.5mm solid var(--tinta);border-radius:1mm}
+.regras ol{display:grid;gap:1.2mm;padding-left:5.5mm;font-size:10pt;line-height:1.4}
+.regras li{padding-left:1mm}
+.regras li::marker{font:600 10pt var(--mono);color:var(--dado-escuro)}
+.exemplo{padding:3mm 5mm;border-left:1.4mm solid var(--achado);background:#fbf4e2;font-size:10pt}
+.conversa ul{display:grid;grid-template-columns:1fr 1fr;gap:1.4mm 8mm;padding-left:4.5mm;font-size:9.6pt;line-height:1.38}
+.conversa li::marker{color:var(--perigo)}
+.rodape{margin-top:auto;display:flex;justify-content:space-between;gap:6mm;font:500 7.5pt/1.3 var(--mono);letter-spacing:.04em;color:var(--cinza)}
+
+/* ---------- 2 e 3. placas de dobrar ---------- */
+.placa{padding:9mm;gap:0}
+.face{flex:1 1 0;display:flex;flex-direction:column;justify-content:space-between;padding:8mm 9mm 7mm;border-radius:2mm}
+.face.virada{transform:rotate(180deg)}
+.dobra{flex:none;display:flex;align-items:center;gap:3mm;height:9mm;font:500 7pt/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cinza)}
+.dobra::before,.dobra::after{content:"";flex:1;border-top:.3mm dashed var(--cinza)}
+.face .topo{display:flex;justify-content:space-between;align-items:baseline;gap:6mm}
+.face .palavra{display:flex;align-items:center;gap:6mm}
+.face .palavra b{font:700 36mm/.86 var(--display);letter-spacing:-.005em;text-transform:uppercase}
+.face .palavra svg{flex:none;width:24mm;height:24mm}
+.face .frase{font:600 15pt/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.face .equipe{display:flex;align-items:flex-end;gap:3mm;font:500 9pt/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.face .equipe i{flex:1;border-bottom:.5mm solid currentColor;height:8mm}
+.continuar{background:var(--dado);color:var(--tinta)}
+.retornar{background:var(--achado);color:var(--tinta)}
+.continuar .rotulo,.retornar .rotulo{color:var(--tinta);opacity:.75}
+
+.palpite{background:var(--papel);border:2.2mm solid var(--perigo)}
+.palpite.vencer{border-color:var(--achado)}
+.palpite h2{font:700 25pt/1 var(--display);letter-spacing:.03em;text-transform:uppercase}
+.palpite .pergunta{font:500 12.5pt/1.3 var(--texto);max-width:150mm}
+.caixa-grande{display:flex;align-items:center;gap:6mm}
+.caixa-grande span{flex:1;height:52mm;border:1mm solid var(--tinta);border-radius:2mm}
+.caixa-grande b{font:700 48mm/.8 var(--display)}
+
+/* ---------- 2 e 3. cartões de decisão: 63,5 × 88 mm (tamanho padrão de carta, para sleeves 66 × 91), 8 por folha deitada ---------- */
+@page deitada{size:A4 landscape;margin:0}
+.pagina.cartoes{page:deitada;width:297mm;height:210mm;display:grid;grid-template-columns:repeat(4,63.5mm);grid-auto-rows:88mm;gap:5mm;padding:0;justify-content:center;align-content:center}
+.cartao{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6mm 4.5mm 6.5mm;overflow:hidden;text-align:center;outline:.2mm solid rgba(15,27,43,.35)}
+.cartao .marca{font-size:7.5pt}
+.cartao svg{width:27mm;height:27mm}
+.cartao b{font:700 12.6mm/.9 var(--display);letter-spacing:-.005em;text-transform:uppercase;white-space:nowrap}
+.cartao p{font:600 8pt/1.2 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.cartao .meio{display:grid;justify-items:center;gap:4mm}
+
+/* ---------- 4. ficha de campo ---------- */
+.ficha{gap:3.2mm;padding:11mm 12mm 10mm}
+.ficha header{display:grid;grid-template-columns:auto 1fr;gap:3mm 8mm;align-items:end;padding-bottom:3.5mm;border-bottom:1.1mm solid var(--tinta)}
+.ficha h1{font:700 27pt/.9 var(--display);letter-spacing:.02em;text-transform:uppercase}
+.ficha h1 small{display:block;margin-bottom:1.5mm;font:400 9.5pt/1 var(--estencil);letter-spacing:.12em;color:var(--perigo)}
+.campo-linha{display:flex;align-items:flex-end;gap:2.5mm;font:500 8pt/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cinza)}
+.campo-linha i{flex:1;height:8mm;border-bottom:.4mm solid var(--tinta)}
+.cab{display:grid;grid-template-columns:2fr 1fr;gap:6mm}
+.exp{display:grid;grid-template-columns:17mm 1fr;border:.4mm solid var(--tinta);border-radius:1mm;overflow:hidden;break-inside:avoid}
+.exp .num{display:grid;place-items:center;align-content:center;gap:1mm;background:var(--tinta);color:#fff}
+.exp .num small{font:500 6.5pt/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.exp .num b{font:700 30pt/.9 var(--display)}
+.exp .corpo{display:grid;gap:2.2mm;padding:2.6mm 3.5mm 3mm}
+.linha{display:flex;align-items:flex-end;gap:2mm}
+.linha .campo-linha{flex:1}
+.cx{display:grid;gap:1mm;justify-items:start;width:17mm}
+.cx small{display:flex;align-items:flex-end;min-height:2.3em;font:500 6.3pt/1.15 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--cinza)}
+.cx span{display:flex;align-items:flex-end;justify-content:flex-end;width:100%;height:10.5mm;padding:0 1.2mm .8mm;border:.4mm solid var(--tinta);border-radius:.8mm;font:500 8pt/1 var(--mono);color:var(--cinza)}
+.cx.p{width:15.5mm}
+.cx.p small{min-height:0}
+.cx.p span{border-color:var(--perigo)}
+.cx.g span{border-width:.8mm;border-color:var(--dado-escuro)}
+.cx.t{width:20mm}
+.cx.t span{border-width:.8mm}
+.cx.v span{border-color:var(--achado-escuro);border-width:.8mm;background:#fbf4e2}
+.op{align-self:flex-end;padding-bottom:2.4mm;font:600 13pt/1 var(--mono)}
+.titulo-linha{align-self:flex-end;width:21mm;padding-bottom:2.6mm;font:600 8.5pt/1.15 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.empurra{margin-left:auto}
+.fecho{display:grid;grid-template-columns:1fr auto;gap:6mm;align-items:end;padding-top:1mm}
+.fecho ul{display:grid;gap:1mm;padding-left:4.5mm;font-size:8.6pt;line-height:1.35}
+.fecho .linha{gap:2.5mm}
+</style>
+</head>
+<body>
+
+<!-- 1. guia do kit -->
+<section class="pagina guia">
+  <header>
+    <div><p class="rotulo">Kit de sala de aula</p><h1>Protocolo <em>Zero</em></h1></div>
+    <p>Uma investigação epidemiológica para quem sabe a hora de voltar</p>
+  </header>
+
+  <div>
+    <h2>O que imprimir</h2>
+    <div class="pecas">
+      <div class="peca"><p class="rotulo">Páginas 2 e 3 · em cores</p><b>Cartões de decisão</b><p>São 8 cartões por folha, um par para cada uma das 8 equipes: um verde, de CONTINUAR, e um dourado, de RETORNAR. Medem 63,5 × 88 mm e cabem em sleeves padrão (66 × 91 mm).</p></div>
+      <div class="peca c"><p class="rotulo">Página 4 · pode ser em preto</p><b>Ficha de campo</b><p>Uma por equipe. O placar da tela fica oculto, e cada equipe anota aqui os próprios pontos, os palpites e a probabilidade de vencer.</p></div>
+      <div class="peca b"><p class="rotulo">Na hora de decidir</p><b>Como usar os cartões</b><p>A equipe escolhe em segredo e segura o cartão virado para baixo. No “3, 2, 1, já”, todas levantam ao mesmo tempo, como um juiz de futebol.</p></div>
+    </div>
+  </div>
+
+  <div class="regras">
+    <h2>Regras em um minuto</h2>
+    <ol>
+      <li>São <b>5 expedições</b>. Em cada uma, todas as equipes entram em campo e as cartas são reveladas uma a uma.</li>
+      <li><b>Coleta de dados:</b> os pontos da carta são divididos igualmente entre as equipes em campo e ficam como <b>dados provisórios</b>. O que sobra da divisão vira <b>dado pendente</b>.</li>
+      <li><b>Perigo:</b> o primeiro de cada tipo é só um alerta. O segundo do mesmo tipo encerra a expedição, e quem está em campo perde os dados provisórios.</li>
+      <li>Depois de cada carta, todas as equipes decidem ao mesmo tempo: <b>continuar</b> ou <b>retornar</b>.</li>
+      <li>Quem retorna transforma os provisórios em pontos garantidos e divide os dados pendentes. Quem retorna <b>sozinho</b> leva também a descoberta que estiver livre.</li>
+      <li>A cada perigo novo, todas as equipes dão um palpite: qual é a <b>probabilidade</b> de a próxima carta encerrar a expedição? Cada equipe anota na ficha antes de responder em voz alta.</li>
+      <li>Vence quem tiver mais pontos ao fim das 5 expedições. As três equipes com os melhores palpites ganham 5, 3 e 1 ponto de bônus.</li>
+    </ol>
+  </div>
+
+  <p class="exemplo"><b>Como preencher a ficha.</b> A equipe decide retornar quando tem 12 dados provisórios. Recebe 2 dos dados pendentes e, por ter voltado sozinha, registra a descoberta Paciente 0, que vale 5. Garantidos na expedição: 12 + 2 + 5 = 19. Se um perigo encerrar a expedição com a equipe ainda em campo, ela anota 0.</p>
+
+  <div class="conversa">
+    <h2>Para a conversa depois da partida</h2>
+    <ul>
+      <li>Em que momento a sua equipe decidiu retornar? Por quê?</li>
+      <li>Vocês contaram quantos perigos já tinham saído e quantas cartas restavam no monte?</li>
+      <li>A decisão que rendeu mais pontos foi, naquele momento, a mais racional?</li>
+      <li>Perder o que já estava na mão pesou mais do que deixar de ganhar a mesma quantidade?</li>
+      <li>Os palpites da turma ficaram acima ou abaixo do risco real? O que explica a diferença?</li>
+      <li>Quanto somaram as probabilidades de vencer declaradas pelas equipes? Quanto deveriam somar?</li>
+    </ul>
+  </div>
+
+  <div class="rodape"><span>Protocolo Zero · jogo de André D. Bacchi · uso educacional</span><span>1 / 4</span></div>
+</section>
+
+<!-- 2. cartões CONTINUAR -->
+<section class="pagina cartoes" data-tipo="continuar"></section>
+
+<!-- 3. cartões RETORNAR -->
+<section class="pagina cartoes" data-tipo="retornar"></section>
+
+<!-- 4. ficha de campo -->
+<section class="pagina ficha">
+  <header>
+    <h1><small>Protocolo Zero</small>Ficha de campo</h1>
+    <div class="cab"><div class="campo-linha">Equipe <i></i></div><div class="campo-linha">Data <i></i></div></div>
+  </header>
+
+  <!-- as cinco expedições são geradas abaixo -->
+  <div id="expedicoes" style="display:grid;gap:3mm"></div>
+
+  <div class="fecho">
+    <ul>
+      <li>Anote um palpite a cada perigo novo que aparecer, mesmo que a equipe já tenha retornado.</li>
+      <li>Só preencha “pendentes” e “descoberta” na expedição em que a equipe retornou.</li>
+      <li>Se um perigo encerrou a expedição com a equipe em campo, os garantidos são 0.</li>
+    </ul>
+    <div class="linha">
+      <div class="cx t"><small>Total da 5ª expedição</small><span></span></div><span class="op">+</span>
+      <div class="cx"><small>Bônus de palpites</small><span></span></div><span class="op">=</span>
+      <div class="cx t g"><small>Pontuação final</small><span></span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const CARTAO = {
+  continuar: ['Continuar', 'Ficamos em campo', '<path d="M8 30h42M34 12l18 18-18 18"/>'],
+  retornar: ['Retornar', 'Garantimos os pontos', '<path d="M22 14L8 28l14 14"/><path d="M10 28h26a14 14 0 0 1 0 28H24"/>']
+};
+document.querySelectorAll('.cartoes').forEach(pg => {
+  const [palavra, frase, seta] = CARTAO[pg.dataset.tipo];
+  pg.innerHTML = Array.from({ length: 8 }, () => `<div class="cartao ${pg.dataset.tipo}">
+    <span class="marca">Protocolo Zero</span>
+    <div class="meio"><svg viewBox="0 0 60 60" fill="none" stroke="#0f1b2b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${seta}</svg><b>${palavra}</b></div>
+    <p>${frase}</p></div>`).join('');
+});
+const alvo = document.getElementById('expedicoes');
+for (let e = 1; e <= 5; e++) {
+  const palpites = [1, 2, 3, 4, 5].map(n => `<div class="cx p"><small>${n}º alerta</small><span>%</span></div>`).join('');
+  const vencer = e < 5 ? `<div class="cx v empurra"><small>Prob. de vencer</small><span>%</span></div>` : '';
+  alvo.insertAdjacentHTML('beforeend', `<div class="exp">
+    <div class="num"><small>Expedição</small><b>${e}</b></div>
+    <div class="corpo">
+      <div class="linha"><span class="titulo-linha">Palpites de risco</span>${palpites}<div class="campo-linha" style="margin-left:4mm">Região <i></i></div></div>
+      <div class="linha"><span class="titulo-linha">Pontos</span>
+        <div class="cx"><small>Provisórios ao retornar</small><span></span></div><span class="op">+</span>
+        <div class="cx"><small>Pendentes</small><span></span></div><span class="op">+</span>
+        <div class="cx"><small>Descoberta</small><span></span></div><span class="op">=</span>
+        <div class="cx g"><small>Garantidos</small><span></span></div>
+        <div class="cx t" style="margin-left:2mm"><small>Total até aqui</small><span></span></div>
+        ${vencer}
+      </div>
+    </div></div>`);
+}
+</script>
+</body>
+</html>
