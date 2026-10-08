@@ -414,6 +414,17 @@ dialog::backdrop{background:rgba(4,9,17,.84)}
   .ficha-carta{--cw:240px}
   .corpo{padding:44px 44px 36px}
 }
+/* Detalhes da carta em tela cheia: a carta grande de um lado e o texto do outro, para ler de longe no projetor. */
+dialog.carta-cheia{width:calc(100vw - 16px);max-width:none;height:calc(100% - 16px);max-height:none}
+.carta-cheia .ficha-corpo{min-height:100%;align-content:center;justify-items:center}
+.carta-cheia .ficha-carta{--cw:min(62vw,calc((100*var(--vh) - 150px)*.42))}
+.carta-cheia .ficha-texto{font-size:clamp(16px,1.45vw,23px);line-height:1.5}
+.carta-cheia .ficha-texto h3{font-size:clamp(30px,4.4vw,68px)}
+.carta-cheia .ficha-texto .chapa{font-size:clamp(12px,1vw,16px)}
+@media (min-width:720px){
+  .carta-cheia .ficha-corpo{grid-template-columns:auto minmax(0,34em);justify-content:center;align-items:center;gap:clamp(30px,4.5vw,76px);padding:clamp(30px,4vw,64px)}
+  .carta-cheia .ficha-carta{--cw:min(38vw,calc((100*var(--vh) - 110px)/1.4))}
+}
 details{border-top:1px solid var(--filete)}
 details:last-of-type{border-bottom:1px solid var(--filete)}
 summary{display:flex;align-items:center;gap:12px;padding:12px 2px;font:600 20px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;list-style:none}

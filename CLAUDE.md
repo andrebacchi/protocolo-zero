@@ -46,6 +46,8 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
 - **Ficha da equipe (`#equipe`):** versão digital da ficha de campo e dos cartões de decisão, para o celular de cada equipe quando não dá para imprimir.
   Sem servidor: a ficha fica no aparelho (localStorage `protocolo-zero:ficha`) e nada chega ao professor, que continua digitando os palpites ditos em voz alta.
   O André não quis o ícone do app na capa.
+- **Detalhes da carta:** tocar em qualquer carta revelada abre `dialog#ficha` em tela cheia (carta grande e texto, para ler no projetor). Cuidado com ids repetidos:
+  o formulário da ficha da equipe se chama `#ficha-equipe` (na versão 1.2 os dois eram `#ficha`, e as cartas pararam de abrir).
 - **Revelar carta (`apresentar`):** não use `fill: 'forwards'` encadeado; a posição de palco vai no estilo da carta e é limpa no fim (com fill, a carta às vezes ficava presa ampliada).
 - **Service worker:** apaga só os caches com prefixo `protocolo-zero-` (todos os apps dividem a origem `andrebacchi.github.io`). As 32 imagens são guardadas em segundo plano na primeira visita.
 

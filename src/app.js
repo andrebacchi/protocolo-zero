@@ -398,7 +398,7 @@ function abrirFicha(id) {
     if (id === 'D4' && G && G.nomeRevelado) extra += `<p>Nesta partida, o agente é <i class="sp">${esc(G.agente.especie)}</i> (${G.agente.tipo}), e a doença passou a se chamar <b>${esc(G.agente.doenca)}</b>.</p>`;
   }
   const txt = (Array.isArray(c.txt) ? c.txt : [c.txt]).map(p => `<p>${p}</p>`).join('');
-  $('#ficha-corpo').innerHTML = `<div class="ficha-carta"></div><div class="ficha-texto"><p class="chapa">${ROTULO[c.tipo]} · ${c.id}</p><h3>${esc(c.nome)}</h3>${txt}${extra}<p class="arte-nota">${IMG[c.id] ? 'Arte' : 'Arte provisória. A imagem definitiva entra com o código'} ${c.id}.</p></div>`;
+  $('#ficha-corpo').innerHTML = `<div class="ficha-carta"></div><div class="ficha-texto"><p class="chapa">${ROTULO[c.tipo]} · ${c.id}</p><h3>${esc(c.nome)}</h3>${txt}${extra}${IMG[c.id] ? '' : `<p class="arte-nota">Arte provisória. A imagem definitiva entra com o código ${c.id}.</p>`}</div>`;
   $('.ficha-carta').append(criarCarta(id, { virada: true, tag: 'span' }));
   const d = $('#ficha'); if (!d.open) d.showModal(); d.scrollTop = 0;
 }
@@ -773,6 +773,7 @@ async function aoRevelar() {
     else if (item.livre) clarao(true);
     if (G.fase === 'fimExp' && G.fim.como === 'retorno') { trilha.classList.add('guardada'); carimbar(true); }
     pintar(false); pulsar(antes);
+    el.scrollIntoView({ block: 'nearest' });   // no celular, a faixa da divisão empurra a trilha para baixo
     if (item.id === 'D4') await abrirAgente();
   } finally { ocupado = false; }
 }
@@ -959,7 +960,7 @@ const ATOS = {
   'qr-equipe'() { $('#qr-equipe').showModal(); },
   'ficha-limpar'() {
     const b = $('#ficha-limpar');
-    if (b.dataset.certeza) { cofre.gravar('ficha', null); FICHA = null; $('#ficha').innerHTML = ''; return pintarFichaEquipe(); }
+    if (b.dataset.certeza) { cofre.gravar('ficha', null); FICHA = null; $('#ficha-equipe').innerHTML = ''; return pintarFichaEquipe(); }
     b.dataset.certeza = '1'; b.textContent = 'Toque de novo para apagar tudo';
     setTimeout(() => { if (b.isConnected) { delete b.dataset.certeza; b.textContent = 'Limpar a ficha'; } }, 3500);
   },
@@ -983,10 +984,10 @@ document.addEventListener('click', e => {
   if (quer('#ver-placar')) { G.verPlacar = !G.verPlacar; return pintarPainel(); }
   if (quer('#desfazer')) { if (ocupado || !HIST.length) return; G = JSON.parse(HIST.pop()); return pintar(true); }
   if (quer('#sortear-nome')) { const a = gerarAgente(); $('#saida-nome').innerHTML = `<div class="ficha-agente">${fichaAgente(a)}</div>`; return; }
-  if ((el = quer('[data-abrir]')) && !ocupado) return abrirFicha(el.dataset.abrir);
+  if ((el = quer('[data-abrir]')) && !ocupado) return el.closest('#ficha') ? $('#ficha').close() : abrirFicha(el.dataset.abrir);   // na ficha aberta, tocar na carta fecha
 });
 document.addEventListener('input', e => {
-  if (e.target.closest('#ficha')) return aoEditarFicha(e.target);
+  if (e.target.closest('#ficha-equipe')) return aoEditarFicha(e.target);
   if (e.target.matches('[data-pal],[data-ven]')) {
     const ok = $('#pal-ok');
     if (ok) ok.disabled = !$$('[data-pal],[data-ven]').some(el => el.value.trim() !== '' && +el.value >= 0 && +el.value <= 100);
@@ -1025,7 +1026,7 @@ function pintarSomasFicha() {
   $('#f-tot-fim').textContent = s.linhas[4].total; $('#f-final').textContent = s.final;
 }
 function pintarFichaEquipe() {
-  const f = $('#ficha');
+  const f = $('#ficha-equipe');
   if (f.childElementCount) return;
   const salva = cofre.ler('ficha');
   FICHA = salva && Array.isArray(salva.exp) && salva.exp.length === 5 ? salva : fichaVazia();
