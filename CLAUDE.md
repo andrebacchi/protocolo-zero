@@ -49,6 +49,7 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
 - **Detalhes da carta:** tocar em qualquer carta revelada abre `dialog#ficha` em tela cheia (carta grande e texto, para ler no projetor). Cuidado com ids repetidos:
   o formulário da ficha da equipe se chama `#ficha-equipe` (na versão 1.2 os dois eram `#ficha`, e as cartas pararam de abrir).
 - **Revelar carta (`apresentar`):** não use `fill: 'forwards'` encadeado; a posição de palco vai no estilo da carta e é limpa no fim (com fill, a carta às vezes ficava presa ampliada).
+- **Pódio (`revelarPodio`):** ao fim da 5ª expedição, antes do relatório, o 3º, o 2º e o 1º lugar são revelados um de cada vez (o professor toca em "Revelar"; a carta treme, vira e recebe o carimbo; o 1º tem clarão dourado e confete). A classificação vem de `apurar()`, a mesma do relatório (com bônus; empates dividem a posição). "Rever o pódio" fica no fim do relatório; "Ver o último relatório" na capa não repete a revelação.
 - **Service worker:** apaga só os caches com prefixo `protocolo-zero-` (todos os apps dividem a origem `andrebacchi.github.io`). As 32 imagens são guardadas em segundo plano na primeira visita.
 
 ## Pendências

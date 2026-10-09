@@ -471,6 +471,52 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
 .fora{border:1px solid var(--filete-forte);border-radius:3px;padding:10px 12px}
 .elo{display:inline;padding:0;border:0;background:none;color:var(--dado-claro);font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 
+/* ---------- revelação do pódio ---------- */
+.revela{position:fixed;inset:0;z-index:200;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:max(14px,env(safe-area-inset-top)) 16px max(14px,env(safe-area-inset-bottom));overflow:hidden;
+  background:radial-gradient(120% 80% at 50% 0%,var(--mesa-clara) 0%,var(--mesa) 45%,var(--fundo) 100%);
+  --w:min(29vw,calc(var(--vh)*33),250px)}
+.revela[hidden]{display:none}
+.revela::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.35;background:linear-gradient(var(--filete) 1px,transparent 1px) 0 0/100% 28px,linear-gradient(90deg,var(--filete) 1px,transparent 1px) 0 0/28px 100%}
+.revela::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(closest-side,transparent 30%,rgba(232,178,62,.45))}
+.revela.final::after{animation:clarao 1.4s ease-out both}
+.revela-topo{display:grid;gap:6px;justify-items:center;text-align:center;padding-top:clamp(4px,3vh,40px)}
+.revela-topo h3{max-width:22ch;font:700 clamp(28px,6vw,60px)/.95 var(--display);text-transform:uppercase;color:var(--papel);overflow-wrap:anywhere;animation:surgir .45s ease-out both}
+.revela.final .revela-topo h3{color:var(--achado)}
+.revela-acoes{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;align-items:center;padding-bottom:4px}
+.revela-acoes .btn{min-width:min(100%,300px)}
+.palco{align-self:center;display:flex;justify-content:center;align-items:flex-end;gap:clamp(6px,2.4vw,28px);min-height:0}
+.degrau{display:grid;justify-items:center;width:var(--w);position:relative}
+.base{width:calc(var(--w)*1.06);display:grid;place-items:center;border:1px solid var(--filete-forte);border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(var(--mesa-clara),var(--painel));font:400 calc(var(--w)*.3)/1 var(--estencil);color:var(--nevoa)}
+.d1 .base{height:calc(var(--w)*.62);color:var(--achado)}
+.d2 .base{height:calc(var(--w)*.4)}
+.d3 .base{height:calc(var(--w)*.24);font-size:calc(var(--w)*.2)}
+.placa{position:relative;width:var(--w);aspect-ratio:600/840;margin-bottom:10px;perspective:1000px}
+.placa-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.3,1.25,.5,1)}
+.virada .placa-in{transform:rotateY(180deg)}
+.placa-verso,.placa-frente{position:absolute;inset:0;border-radius:calc(var(--w)*.06);backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--sombra)}
+.placa-verso{background:var(--tinta) var(--verso) center/100% 100% no-repeat}
+.placa-frente{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:calc(var(--w)*.05);padding:calc(var(--w)*.09);text-align:center;background:var(--papel);color:var(--tinta);border-top:calc(var(--w)*.05) solid var(--dado)}
+.d2 .placa-frente{border-top-color:var(--serie-b)}
+.d1 .placa-frente{border-top-color:var(--achado);box-shadow:var(--sombra),0 0 0 2px var(--achado),0 0 calc(var(--w)*.3) rgba(232,178,62,.6)}
+.pl-lugar{font:500 calc(var(--w)*.065)/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#4a5a6d}
+.pl-nome{display:block;width:100%;font:700 calc(var(--w)*.15)/1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.pl-pts{font:500 calc(var(--w)*.07)/1.1 var(--mono);color:#4a5a6d}
+.pl-pts b{display:block;font:600 calc(var(--w)*.24)/1 var(--mono);color:var(--tinta)}
+.placa-frente small{font:500 calc(var(--w)*.058)/1.2 var(--mono);color:#4a5a6d}
+.vez .placa{animation:pulso 1.1s ease-in-out infinite}
+.d1.vez .placa{animation-duration:.8s}
+@keyframes pulso{50%{filter:drop-shadow(0 0 calc(var(--w)*.12) rgba(134,226,213,.7))}}
+.d1.vez .placa{animation-name:pulso-ouro}
+@keyframes pulso-ouro{50%{filter:drop-shadow(0 0 calc(var(--w)*.16) rgba(232,178,62,.85))}}
+.placa.suspense .placa-in{animation:tremor .45s ease-in-out infinite}
+.selo{position:absolute;left:50%;bottom:-3%;z-index:3;translate:-50% 0;rotate:-8deg;padding:.2em .45em .1em;border:3px solid var(--dado);border-radius:4px;background:rgba(8,18,32,.88);color:var(--dado-claro);font:400 calc(var(--w)*.14)/1 var(--estencil);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;pointer-events:none;animation:carimbar .45s cubic-bezier(.2,1.4,.4,1) both}
+.d2 .selo{border-color:var(--serie-b);color:#9fd0f2}
+.d1 .selo{border-color:var(--achado);color:var(--achado);font-size:calc(var(--w)*.16)}
+.d1.virada::before{content:"";position:absolute;left:50%;top:calc(var(--w)*.7);width:calc(var(--w)*2.6);aspect-ratio:1;translate:-50% -50%;z-index:-1;border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(rgba(232,178,62,.22) 0 8deg,transparent 8deg 20deg);-webkit-mask-image:radial-gradient(closest-side,#000 30%,transparent);mask-image:radial-gradient(closest-side,#000 30%,transparent);animation:raios 14s linear infinite,surgir .8s ease-out both}
+@keyframes raios{to{rotate:360deg}}
+.confete{position:absolute;top:0;width:8px;height:13px;border-radius:1px;pointer-events:none;z-index:5}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -540,7 +586,7 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
     <p>Mecânica de <i>push your luck</i> inspirada em <cite>Diamant</cite> / <cite>Incan Gold</cite> (Tesouro Inca), de Alan R. Moon e Bruno Faidutti. Tema, cartas e textos são originais.</p>
     <p>O surto, a doença e o agente são fictícios. Contornos dos estados simplificados a partir de dados abertos (Code for America, <cite>click_that_hood</cite>). Uso educacional.</p>
     <p>© André Demambre Bacchi. Todos os direitos reservados.</p>
-    <p class="versao">Versão 1.3</p>
+    <p class="versao">Versão 1.4</p>
   </footer>
 </div>
 </main>
@@ -613,6 +659,12 @@ kbd{padding:0 5px;border:1px solid var(--filete-forte);border-radius:3px;font:50
   </header>
   <div class="miolo fim" id="fim"></div>
 </section>
+
+<div class="revela" id="revela" hidden role="dialog" aria-modal="true" aria-label="Pódio da investigação">
+  <div class="revela-topo"><p class="chapa">Cinco regiões investigadas</p><h3 id="revela-titulo" aria-live="polite">Quem fecha a investigação na frente?</h3></div>
+  <div class="palco" id="palco"></div>
+  <div class="revela-acoes"><button class="btn principal grande" id="revela-btn" type="button">Revelar o 3º lugar</button><button class="btn-liso" id="revela-pular" type="button">Pular para o relatório</button></div>
+</div>
 
 <section class="tela" id="tela-equipe" hidden>
   <header class="barra">
@@ -1527,11 +1579,9 @@ async function inserirNoMonte(id, de) {
 }
 
 /* ---------- relatório final ---------- */
-function pintarFim() {
-  if (!G) return;
-  const regs = G.reg.filter(Boolean), todos = regs.flatMap(r => r.passos), k = G.equipes.length;
-  const sinal = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${nf(Math.abs(v), d)}`;
-
+/* apuração final: ranking dos palpites de risco, bônus e classificação (usada pelo relatório e pela revelação do pódio) */
+function apurar() {
+  const regs = G.reg.filter(Boolean), todos = regs.flatMap(r => r.passos);
   /* risco: palpites de cada equipe e ranking de quem chegou mais perto do risco real */
   const porEquipe = G.equipes.map((e, i) => {
     const pts = [];
@@ -1553,6 +1603,15 @@ function pintarFim() {
   const final = total.map(t => (t === melhor ? 1 / empate : 0));
   const topoCampo = Math.max(...G.equipes.map(e => e.gar));
   const virou = G.opc.bonus && G.equipes[ordem[0].i].gar < topoCampo;
+
+  const lugar = ordem.map(({ i }) => 1 + total.filter(t => t > total[i]).length);   // 1º, 2º, 2º, 4º... (empates dividem a posição)
+  return { regs, todos, porEquipe, tudo, teto, comPalpite, pausas, minimo, erro, aptas, posicao, bonus, total, ordem, lugar, melhor, empate, final, virou };
+}
+
+function pintarFim() {
+  if (!G) return;
+  const { regs, todos, porEquipe, tudo, teto, comPalpite, pausas, minimo, erro, aptas, posicao, bonus, total, ordem, empate, final, virou } = apurar(), k = G.equipes.length;
+  const sinal = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${nf(Math.abs(v), d)}`;
 
   let risco = '<p>Nenhum palpite de risco foi registrado nesta partida.</p>';
   if (tudo.length) {
@@ -1609,9 +1668,84 @@ function pintarFim() {
     <section><h4>Decisões e valor esperado</h4>
       <div class="tab-rola"><table><thead><tr><th>Equipe</th><th>Pontos de campo</th><th>Continuou</th><th>com VE negativo</th><th>Retornou</th><th>com VE positivo</th><th>Sozinha</th></tr></thead><tbody>${linhasVe}</tbody></table></div>
       <p class="ajuda">Valor esperado (VE) de continuar = ganho esperado da próxima carta − risco × dados provisórios. A conta não inclui os dados pendentes nem as descobertas, que dependem do que as outras equipes fazem. Uma decisão com VE negativo pode dar certo, e uma com VE positivo pode dar errado: o resultado de uma rodada não diz se a decisão foi boa.</p></section>
-    <section><div class="abre-acoes"><button class="btn principal grande" type="button" data-ato="de-novo">Nova partida</button><button class="btn" type="button" data-ir="capa">Voltar ao início</button></div></section>`;
+    <section><div class="abre-acoes"><button class="btn principal grande" type="button" data-ato="de-novo">Nova partida</button><button class="btn" type="button" data-ato="podio">Rever o pódio</button><button class="btn" type="button" data-ir="capa">Voltar ao início</button></div></section>`;
   gravarPartida();
 }
+
+/* ---------- revelação do pódio: 3º, 2º e 1º lugar, um de cada vez, antes do relatório ---------- */
+let podioEtapa = -1;
+function revelarPodio() {
+  const { ordem, lugar, total, bonus } = apurar();
+  const slots = ordem.slice(0, 3).map(({ e, i }, k) => ({ nome: e.nome, pts: total[i], bonus: bonus[i], lugar: lugar[k], empate: lugar.filter(l => l === lugar[k]).length > 1 }));
+  const palco = $('#palco');
+  palco.innerHTML = [1, 0, 2].map(k => { const s = slots[k];
+    return `<div class="degrau d${k + 1}" data-k="${k}">
+      <div class="placa"><div class="placa-in"><div class="placa-verso"></div>
+        <div class="placa-frente"><span class="pl-lugar">${s.lugar}º lugar${s.empate ? ' · empate' : ''}</span><b class="pl-nome">${esc(s.nome)}</b><span class="pl-pts"><b>0</b> ${s.pts === 1 ? 'ponto' : 'pontos'}</span>${s.bonus ? `<small>inclui ${s.bonus} de bônus</small>` : ''}</div>
+      </div></div>
+      <div class="base"><span>${k + 1}</span></div></div>`; }).join('');
+  palco.dataset.slots = JSON.stringify(slots);
+  podioEtapa = 2;
+  $('#revela-titulo').textContent = 'Quem fecha a investigação na frente?';
+  const b = $('#revela-btn'); b.textContent = 'Revelar o 3º lugar'; b.disabled = false;
+  const r = $('#revela'); r.classList.remove('final'); r.hidden = false; b.focus();
+}
+function fecharPodio() { $('#revela').hidden = true; podioEtapa = -1; $$('.confete').forEach(c => c.remove()); const t = $('#tela-fim'); if (t) t.scrollTop = 0; }
+function subirNumero(el, ate, ms) {
+  if (calmo || !ate) { el.textContent = ate; return; }
+  const t0 = performance.now();
+  const passo = t => { const f = Math.min(1, (t - t0) / ms); el.textContent = Math.round(ate * (1 - Math.pow(1 - f, 3))); if (f < 1) requestAnimationFrame(passo); };
+  requestAnimationFrame(passo);
+}
+function confetes() {
+  if (calmo) return;
+  const cores = ['var(--achado)', 'var(--dado)', 'var(--papel)', 'var(--dado-claro)'], r = $('#revela');
+  for (let n = 0; n < 70; n++) {
+    const c = document.createElement('i'); c.className = 'confete';
+    c.style.left = Math.random() * 100 + '%'; c.style.background = cores[n % cores.length];
+    r.append(c);
+    const queda = innerHeight * (0.9 + Math.random() * 0.4), giro = (Math.random() - 0.5) * 1080, lado = (Math.random() - 0.5) * 160;
+    c.animate([{ transform: 'translate(0,-20px) rotate(0)' }, { transform: `translate(${lado}px,${queda}px) rotate(${giro}deg)` }],
+      { duration: 2200 + Math.random() * 1800, delay: Math.random() * 500, easing: 'cubic-bezier(.25,.6,.5,1)' }).onfinish = () => c.remove();
+  }
+}
+async function avancarPodio() {
+  const b = $('#revela-btn');
+  if (podioEtapa < 0) return fecharPodio();
+  const k = podioEtapa, slots = JSON.parse($('#palco').dataset.slots), s = slots[k];
+  const d = $(`#palco .degrau[data-k="${k}"]`), placa = d.querySelector('.placa');
+  b.disabled = true;
+  $('#revela-titulo').textContent = k === 0 ? 'E o primeiro lugar fica com…' : `${k + 1}º lugar…`;
+  // suspense: a carta treme por mais tempo quanto mais alta a posição
+  d.classList.add('vez');
+  placa.classList.add('suspense');
+  await espera([2000, 1300, 900][k]);
+  placa.classList.remove('suspense');
+  // ajusta o nome à largura da carta antes de virar
+  const nome = d.querySelector('.pl-nome'); nome.style.fontSize = '';
+  for (let f = parseFloat(getComputedStyle(nome).fontSize), n = 0; nome.scrollWidth > nome.clientWidth + 1 && n < 30; n++) { f *= 0.92; nome.style.fontSize = f + 'px'; }
+  d.classList.add('virada');
+  await espera(380);
+  subirNumero(d.querySelector('.pl-pts b'), s.pts, k === 0 ? 1400 : 900);
+  await espera(k === 0 ? 900 : 600);
+  const selo = document.createElement('span'); selo.className = 'selo';
+  selo.textContent = s.empate ? `${s.lugar}º · empate` : `${s.lugar}º lugar`;
+  placa.append(selo);
+  d.classList.remove('vez');
+  if (k === 0) {
+    const r = $('#revela'); r.classList.add('final');
+    const lideres = slots.filter(x => x.lugar === 1);
+    $('#revela-titulo').textContent = lideres.length > 1 ? 'Empate no primeiro lugar!' : `${s.nome} fecha a investigação na frente!`;
+    confetes();
+  } else $('#revela-titulo').textContent = `${s.lugar}º lugar: ${s.nome}`;
+  await espera(500);
+  podioEtapa = k - 1;
+  b.textContent = k === 0 ? 'Ver o relatório' : `Revelar o ${k}º lugar`;
+  b.disabled = false; b.focus();
+}
+$('#revela-btn').addEventListener('click', avancarPodio);
+$('#revela-pular').addEventListener('click', fecharPodio);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#revela').hidden) fecharPodio(); });
 
 /* ---------- baralho (galeria) ---------- */
 function pintarGaleria() {
@@ -1660,7 +1794,8 @@ const ATOS = {
   fico() { G.marc = botsQueSaem(); aoConfirmar(); },
   volto() { G.marc = [0, ...botsQueSaem()]; aoConfirmar(); },
   bots() { G.marc = botsQueSaem(); aoConfirmar(); },
-  proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') ir('fim'); else pintar(true); },
+  proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') { ir('fim'); revelarPodio(); } else pintar(true); },
+  podio() { revelarPodio(); },
   'qr-equipe'() { $('#qr-equipe').showModal(); },
   'ficha-limpar'() {
     const b = $('#ficha-limpar');

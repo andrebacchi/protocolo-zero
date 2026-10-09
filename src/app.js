@@ -823,11 +823,9 @@ async function inserirNoMonte(id, de) {
 }
 
 /* ---------- relatório final ---------- */
-function pintarFim() {
-  if (!G) return;
-  const regs = G.reg.filter(Boolean), todos = regs.flatMap(r => r.passos), k = G.equipes.length;
-  const sinal = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${nf(Math.abs(v), d)}`;
-
+/* apuração final: ranking dos palpites de risco, bônus e classificação (usada pelo relatório e pela revelação do pódio) */
+function apurar() {
+  const regs = G.reg.filter(Boolean), todos = regs.flatMap(r => r.passos);
   /* risco: palpites de cada equipe e ranking de quem chegou mais perto do risco real */
   const porEquipe = G.equipes.map((e, i) => {
     const pts = [];
@@ -849,6 +847,15 @@ function pintarFim() {
   const final = total.map(t => (t === melhor ? 1 / empate : 0));
   const topoCampo = Math.max(...G.equipes.map(e => e.gar));
   const virou = G.opc.bonus && G.equipes[ordem[0].i].gar < topoCampo;
+
+  const lugar = ordem.map(({ i }) => 1 + total.filter(t => t > total[i]).length);   // 1º, 2º, 2º, 4º... (empates dividem a posição)
+  return { regs, todos, porEquipe, tudo, teto, comPalpite, pausas, minimo, erro, aptas, posicao, bonus, total, ordem, lugar, melhor, empate, final, virou };
+}
+
+function pintarFim() {
+  if (!G) return;
+  const { regs, todos, porEquipe, tudo, teto, comPalpite, pausas, minimo, erro, aptas, posicao, bonus, total, ordem, empate, final, virou } = apurar(), k = G.equipes.length;
+  const sinal = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${nf(Math.abs(v), d)}`;
 
   let risco = '<p>Nenhum palpite de risco foi registrado nesta partida.</p>';
   if (tudo.length) {
@@ -905,9 +912,84 @@ function pintarFim() {
     <section><h4>Decisões e valor esperado</h4>
       <div class="tab-rola"><table><thead><tr><th>Equipe</th><th>Pontos de campo</th><th>Continuou</th><th>com VE negativo</th><th>Retornou</th><th>com VE positivo</th><th>Sozinha</th></tr></thead><tbody>${linhasVe}</tbody></table></div>
       <p class="ajuda">Valor esperado (VE) de continuar = ganho esperado da próxima carta − risco × dados provisórios. A conta não inclui os dados pendentes nem as descobertas, que dependem do que as outras equipes fazem. Uma decisão com VE negativo pode dar certo, e uma com VE positivo pode dar errado: o resultado de uma rodada não diz se a decisão foi boa.</p></section>
-    <section><div class="abre-acoes"><button class="btn principal grande" type="button" data-ato="de-novo">Nova partida</button><button class="btn" type="button" data-ir="capa">Voltar ao início</button></div></section>`;
+    <section><div class="abre-acoes"><button class="btn principal grande" type="button" data-ato="de-novo">Nova partida</button><button class="btn" type="button" data-ato="podio">Rever o pódio</button><button class="btn" type="button" data-ir="capa">Voltar ao início</button></div></section>`;
   gravarPartida();
 }
+
+/* ---------- revelação do pódio: 3º, 2º e 1º lugar, um de cada vez, antes do relatório ---------- */
+let podioEtapa = -1;
+function revelarPodio() {
+  const { ordem, lugar, total, bonus } = apurar();
+  const slots = ordem.slice(0, 3).map(({ e, i }, k) => ({ nome: e.nome, pts: total[i], bonus: bonus[i], lugar: lugar[k], empate: lugar.filter(l => l === lugar[k]).length > 1 }));
+  const palco = $('#palco');
+  palco.innerHTML = [1, 0, 2].map(k => { const s = slots[k];
+    return `<div class="degrau d${k + 1}" data-k="${k}">
+      <div class="placa"><div class="placa-in"><div class="placa-verso"></div>
+        <div class="placa-frente"><span class="pl-lugar">${s.lugar}º lugar${s.empate ? ' · empate' : ''}</span><b class="pl-nome">${esc(s.nome)}</b><span class="pl-pts"><b>0</b> ${s.pts === 1 ? 'ponto' : 'pontos'}</span>${s.bonus ? `<small>inclui ${s.bonus} de bônus</small>` : ''}</div>
+      </div></div>
+      <div class="base"><span>${k + 1}</span></div></div>`; }).join('');
+  palco.dataset.slots = JSON.stringify(slots);
+  podioEtapa = 2;
+  $('#revela-titulo').textContent = 'Quem fecha a investigação na frente?';
+  const b = $('#revela-btn'); b.textContent = 'Revelar o 3º lugar'; b.disabled = false;
+  const r = $('#revela'); r.classList.remove('final'); r.hidden = false; b.focus();
+}
+function fecharPodio() { $('#revela').hidden = true; podioEtapa = -1; $$('.confete').forEach(c => c.remove()); const t = $('#tela-fim'); if (t) t.scrollTop = 0; }
+function subirNumero(el, ate, ms) {
+  if (calmo || !ate) { el.textContent = ate; return; }
+  const t0 = performance.now();
+  const passo = t => { const f = Math.min(1, (t - t0) / ms); el.textContent = Math.round(ate * (1 - Math.pow(1 - f, 3))); if (f < 1) requestAnimationFrame(passo); };
+  requestAnimationFrame(passo);
+}
+function confetes() {
+  if (calmo) return;
+  const cores = ['var(--achado)', 'var(--dado)', 'var(--papel)', 'var(--dado-claro)'], r = $('#revela');
+  for (let n = 0; n < 70; n++) {
+    const c = document.createElement('i'); c.className = 'confete';
+    c.style.left = Math.random() * 100 + '%'; c.style.background = cores[n % cores.length];
+    r.append(c);
+    const queda = innerHeight * (0.9 + Math.random() * 0.4), giro = (Math.random() - 0.5) * 1080, lado = (Math.random() - 0.5) * 160;
+    c.animate([{ transform: 'translate(0,-20px) rotate(0)' }, { transform: `translate(${lado}px,${queda}px) rotate(${giro}deg)` }],
+      { duration: 2200 + Math.random() * 1800, delay: Math.random() * 500, easing: 'cubic-bezier(.25,.6,.5,1)' }).onfinish = () => c.remove();
+  }
+}
+async function avancarPodio() {
+  const b = $('#revela-btn');
+  if (podioEtapa < 0) return fecharPodio();
+  const k = podioEtapa, slots = JSON.parse($('#palco').dataset.slots), s = slots[k];
+  const d = $(`#palco .degrau[data-k="${k}"]`), placa = d.querySelector('.placa');
+  b.disabled = true;
+  $('#revela-titulo').textContent = k === 0 ? 'E o primeiro lugar fica com…' : `${k + 1}º lugar…`;
+  // suspense: a carta treme por mais tempo quanto mais alta a posição
+  d.classList.add('vez');
+  placa.classList.add('suspense');
+  await espera([2000, 1300, 900][k]);
+  placa.classList.remove('suspense');
+  // ajusta o nome à largura da carta antes de virar
+  const nome = d.querySelector('.pl-nome'); nome.style.fontSize = '';
+  for (let f = parseFloat(getComputedStyle(nome).fontSize), n = 0; nome.scrollWidth > nome.clientWidth + 1 && n < 30; n++) { f *= 0.92; nome.style.fontSize = f + 'px'; }
+  d.classList.add('virada');
+  await espera(380);
+  subirNumero(d.querySelector('.pl-pts b'), s.pts, k === 0 ? 1400 : 900);
+  await espera(k === 0 ? 900 : 600);
+  const selo = document.createElement('span'); selo.className = 'selo';
+  selo.textContent = s.empate ? `${s.lugar}º · empate` : `${s.lugar}º lugar`;
+  placa.append(selo);
+  d.classList.remove('vez');
+  if (k === 0) {
+    const r = $('#revela'); r.classList.add('final');
+    const lideres = slots.filter(x => x.lugar === 1);
+    $('#revela-titulo').textContent = lideres.length > 1 ? 'Empate no primeiro lugar!' : `${s.nome} fecha a investigação na frente!`;
+    confetes();
+  } else $('#revela-titulo').textContent = `${s.lugar}º lugar: ${s.nome}`;
+  await espera(500);
+  podioEtapa = k - 1;
+  b.textContent = k === 0 ? 'Ver o relatório' : `Revelar o ${k}º lugar`;
+  b.disabled = false; b.focus();
+}
+$('#revela-btn').addEventListener('click', avancarPodio);
+$('#revela-pular').addEventListener('click', fecharPodio);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#revela').hidden) fecharPodio(); });
 
 /* ---------- baralho (galeria) ---------- */
 function pintarGaleria() {
@@ -956,7 +1038,8 @@ const ATOS = {
   fico() { G.marc = botsQueSaem(); aoConfirmar(); },
   volto() { G.marc = [0, ...botsQueSaem()]; aoConfirmar(); },
   bots() { G.marc = botsQueSaem(); aoConfirmar(); },
-  proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') ir('fim'); else pintar(true); },
+  proxima() { if (ocupado) return; proxima(); if (G.fase === 'fim') { ir('fim'); revelarPodio(); } else pintar(true); },
+  podio() { revelarPodio(); },
   'qr-equipe'() { $('#qr-equipe').showModal(); },
   'ficha-limpar'() {
     const b = $('#ficha-limpar');
