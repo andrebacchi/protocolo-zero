@@ -163,6 +163,24 @@ function ganhoEsperado(n = emCampo().length) {
   for (const id of G.baralho) if (id[0] === 'C') s += Math.floor(carta(id).v / n);
   return s / G.baralho.length;
 }
+/* Pausa de palpite. No modo 'todos' (e nas partidas salvas antes da versão 1.5, com palpites: true), toda pausa de alerta vale.
+   No modo 'sorteio', há uma pausa por expedição, num dos três primeiros alertas: probabilidade 1/3 no 1º, 1/2 no 2º e 1 no 3º
+   (assim cada um dos três tem a mesma probabilidade, 1/3). O sorteio só olha o passado, nunca o monte nem o risco real,
+   então o momento da pausa não dá pista nenhuma sobre o que vem. */
+function pausaSorteada() {
+  if (G.opc.palpites !== 'sorteio') return true;
+  const r = G.reg[G.exp];
+  if (r.sorteada) return false;
+  r.alertas = (r.alertas || 0) + 1;
+  if (r.alertas > 3 || Math.random() >= 1 / (4 - r.alertas)) return false;
+  r.sorteada = true;
+  return true;
+}
+function podePedirPalpite() {
+  if (!G || !G.opc.palpites || G.modo !== 'sala' || G.fase !== 'decidir' || G.sub !== 'decisao' || !G.baralho.length) return false;
+  const p = G.reg[G.exp] && G.reg[G.exp].passos.at(-1);
+  return !!p && !temPalpites(p);
+}
 const passoAtual = () => { const p = G.reg[G.exp].passos; return p[p.length - 1]; };
 
 function novaPartida(cfg) {
@@ -172,7 +190,7 @@ function novaPartida(cfg) {
     regioes: embaralhar(REGIOES.map(r => r.id)), agente: gerarAgente(), nomeRevelado: false,
     exp: 0, pool: { P1: 3, P2: 3, P3: 3, P4: 3, P5: 3 }, achPool: [], baralho: [], trilha: [], vistos: {}, sobras: 0,
     fase: 'briefing', sub: null, marc: [], reg: [], msg: '', conta: null, fim: null, verPlacar: !cfg.ocultar,
-    opc: { palpites: !!cfg.palpites, vencer: !!cfg.vencer, bonus: !!cfg.bonus && !!cfg.palpites }
+    opc: { palpites: cfg.palpites ? (cfg.ritmo === 'todos' ? 'todos' : 'sorteio') : false, vencer: !!cfg.vencer, bonus: !!cfg.bonus && !!cfg.palpites }
   };
   HIST.length = 0;
   prepararExp();
@@ -275,7 +293,7 @@ function revelar() {
   } else {
     G.fase = 'decidir'; G.marc = [];
     const alguemPalpita = G.modo === 'sala' || G.equipes[0].st === 'campo';
-    G.sub = G.opc.palpites && item.alerta && G.baralho.length && alguemPalpita ? 'palpite' : 'decisao';
+    G.sub = G.opc.palpites && item.alerta && G.baralho.length && alguemPalpita && pausaSorteada() ? 'palpite' : 'decisao';
     G.reg[G.exp].passos.push({ n: item.n, risco: riscoReal(), ganho: ganhoEsperado(), emRisco: G.equipes.map(e => (e.st === 'campo' ? e.risco : null)), palpites: null, saiu: [] });
     if (!G.baralho.length) { G.marc = G.equipes.map((e, i) => (e.st === 'campo' ? i : -1)).filter(i => i >= 0); confirmar(true); }
   }
@@ -431,7 +449,8 @@ const REGRAS = [
     <p>O baralho não tem reposição: cada carta revelada muda a composição do monte e, com ela, a probabilidade. A mesa mostra o que é preciso para contar: quantas cartas há no monte e quantas de cada perigo já saíram.</p>
     <p>O <b>ganho esperado</b> da próxima carta, para cada equipe em campo, é a soma do que cada carta do monte renderia para a equipe, dividida pelo número de cartas do monte.</p>`],
   ['percebido', 'Risco e benefício: percebido × real', () => `
-    <p>O app calcula o risco real a cada carta e o mantém escondido. Nas <b>pausas de palpite</b>, que acontecem sempre que surge um perigo novo, todas as equipes estimam a probabilidade de a próxima carta encerrar a expedição, inclusive as que já retornaram. A conta só é revelada no relatório final, para as equipes não ajustarem os palpites seguintes pelo resultado dos anteriores.</p>
+    <p>O app calcula o risco real a cada carta e o mantém escondido. Nas <b>pausas de palpite</b>, todas as equipes estimam a probabilidade de a próxima carta encerrar a expedição, inclusive as que já retornaram. A conta só é revelada no relatório final, para as equipes não ajustarem os palpites seguintes pelo resultado dos anteriores.</p>
+    <p>Por padrão, há uma pausa por expedição, num dos três primeiros alertas, sorteado sem olhar o monte: como ninguém sabe qual perigo vai valer, vale a pena fazer a conta a cada carta. O professor pode pedir palpites extras quando quiser, ou escolher, na preparação, uma pausa a cada perigo novo.</p>
     <p>Ao fim de cada expedição, cada equipe também diz qual é a sua <b>probabilidade de vencer</b> a partida. Com o placar oculto, cada uma conhece só os próprios pontos. O relatório final compara as respostas com uma estimativa calculada a partir do placar real, e mostra quanto somam as probabilidades declaradas (deveriam somar 100%).</p>
     <p>O relatório final mostra o risco real de cada carta, os palpites de cada equipe contra esse valor, e quantas vezes cada equipe continuou em campo quando o valor esperado era negativo.</p>
     <p>O <b>ranking de palpites</b> ordena as equipes pelo erro absoluto médio, que é a distância média entre o palpite e o risco real. Com o bônus ligado, as três mais precisas ganham 5, 3 e 1 ponto no placar final. Só entra no ranking quem respondeu a pelo menos metade das pausas.</p>
@@ -673,7 +692,7 @@ function lerCampos(tipo) {
 function pintarPainel() {
   const solo0 = G.modo === 'solo';
   let pergunta = '';
-  if (G.fase === 'decidir' && G.sub === 'palpite') pergunta = `<div class="palpite"><h4>Pausa de palpite</h4><p>Qual é a probabilidade de a próxima carta encerrar a expedição?${solo0 ? '' : ' Todas as equipes dão o seu palpite, inclusive as que já retornaram.'}</p></div>`;
+  if (G.fase === 'decidir' && G.sub === 'palpite') pergunta = `<div class="palpite"><h4>Pausa de palpite${passoAtual().pedido ? ' <span class="extra">extra</span>' : ''}</h4><p>Qual é a probabilidade de a próxima carta encerrar a expedição?${solo0 ? '' : ' Todas as equipes dão o seu palpite, inclusive as que já retornaram.'}</p></div>`;
   if (G.fase === 'fimExp' && G.sub === 'vencer') pergunta = `<div class="palpite fim-exp"><h4>Fim da expedição ${G.exp + 1} · antes de seguir</h4><p>${G.exp === 3 ? 'Falta 1 expedição' : 'Faltam ' + (4 - G.exp) + ' expedições'}. Qual é a probabilidade de ${solo0 ? 'você' : 'a sua equipe'} <b>vencer a partida</b>?${solo0 || G.verPlacar ? '' : ' Cada equipe responde sem ver o placar das outras.'}</p></div>`;
   $('#equipes').innerHTML = pergunta + `<div class="eq-topo"><span class="chapa">Equipes</span><button class="btn-liso" type="button" id="ver-placar" aria-pressed="${G.verPlacar}">${G.verPlacar ? 'Ocultar placar' : 'Mostrar placar'}</button></div>` + G.equipes.map(linhaEquipe).join('');
   const fala = $('#fala'), acao = $('#acao'), solo = G.modo === 'solo', eu = G.equipes[0];
@@ -697,6 +716,7 @@ function pintarPainel() {
       f += '<p class="nota">Decisão simultânea. Toque nas equipes que retornam e confirme.</p>';
       const k = G.marc.length;
       a = `<button class="btn principal" type="button" data-ato="confirmar">${k ? `Confirmar: ${k === 1 ? '1 retorna' : k + ' retornam'}` : 'Todas continuam'}</button><button class="btn estreito" type="button" data-ato="contar">Contar 3, 2, 1</button>`;
+      if (podePedirPalpite()) a += '<button class="btn-liso pedir" type="button" data-ato="pedir-palpite">+ Pedir palpite agora</button>';
     }
   } else if (G.fase === 'fimExp' && G.sub === 'vencer') {
     f = '';
@@ -855,6 +875,7 @@ function apurar() {
 function pintarFim() {
   if (!G) return;
   const { regs, todos, porEquipe, tudo, teto, comPalpite, pausas, minimo, erro, aptas, posicao, bonus, total, ordem, empate, final, virou } = apurar(), k = G.equipes.length;
+  const pedidas = todos.filter(p => p.pedido && temPalpites(p)).length;
   const sinal = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${nf(Math.abs(v), d)}`;
 
   let risco = '<p>Nenhum palpite de risco foi registrado nesta partida.</p>';
@@ -867,7 +888,7 @@ function pintarFim() {
       ${fila.map(i => { const p = porEquipe[i], m = p.reduce((s, q) => s + (q.pal - q.real), 0) / p.length * 100;
         return `<tr><td>${posicao[i] ? posicao[i] + 'º' : '–'}</td><td style="text-align:left">${esc(G.equipes[i].nome)}</td><td>${p.length}</td><td>${nf(erro[i])}</td><td>${sinal(m)}</td><td>${p.filter(q => q.pal > q.real).length} de ${p.length}</td>${G.opc.bonus ? `<td>${bonus[i] ? '+' + bonus[i] : '–'}</td>` : ''}</tr>`; }).join('')}
       </tbody></table></div>
-      <p class="ajuda">O ranking usa o erro absoluto médio: a distância média, em pontos percentuais, entre o palpite e o risco real. O erro médio mostra a direção do desvio (positivo é superestimar). Entra no ranking quem respondeu a pelo menos ${minimo} das ${pl(pausas, 'pausa', 'pausas')} de palpite.</p>
+      <p class="ajuda">O ranking usa o erro absoluto médio: a distância média, em pontos percentuais, entre o palpite e o risco real. O erro médio mostra a direção do desvio (positivo é superestimar). Entra no ranking quem respondeu a pelo menos ${minimo} das ${pl(pausas, 'pausa', 'pausas')} de palpite${pedidas ? ` (${pausas - pedidas} ${G.opc.palpites === 'sorteio' ? (pausas - pedidas === 1 ? 'sorteada' : 'sorteadas') : 'de alerta'} e ${pedidas} ${pedidas === 1 ? 'extra, pedida' : 'extras, pedidas'} pelo professor)` : ''}.</p>
       <p class="legenda"><span><i class="b"></i>um palpite da equipe</span><span><i class="d"></i>palpite = risco real</span></p>
       <div class="multiplos">${comPalpite.map(i => `<div><h5>${esc(G.equipes[i].nome)}</h5>${grafCalib(porEquipe[i], teto)}</div>`).join('')}</div>
       <p class="ajuda">Pontos acima da linha tracejada são palpites maiores que o risco real; abaixo, menores.</p>`;
@@ -1015,16 +1036,18 @@ function pintarNomes() {
   $('#nomes').innerHTML = Array.from({ length: nEquipes }, (_, i) => `<input type="text" id="eq-nome-${i}" maxlength="24" aria-label="Nome da equipe ${i + 1}" value="${esc(atuais[i] || guard[i] || EQUIPES[i])}">`).join('');
 }
 $('#menos').addEventListener('click', () => { nEquipes = Math.max(3, nEquipes - 1); pintarNomes(); });
+const ritmo = () => { $('#op-ritmo').disabled = !$('#op-palpites').checked; };
+$('#op-palpites').addEventListener('change', ritmo); ritmo();
 $('#mais').addEventListener('click', () => { nEquipes = Math.min(8, nEquipes + 1); pintarNomes(); });
 $('#preparo').addEventListener('submit', ev => {
   ev.preventDefault();
   const nomes = $$('#nomes input').map((i, k) => i.value.trim() || EQUIPES[k]);
   cofre.gravar('nomes', nomes);
-  const cfg = { modo: 'sala', nomes, palpites: $('#op-palpites').checked, vencer: $('#op-vencer').checked, ocultar: $('#op-placar').checked, bonus: $('#op-bonus').checked };
+  const cfg = { modo: 'sala', nomes, palpites: $('#op-palpites').checked, ritmo: ($('[name=ritmo]:checked') || {}).value, vencer: $('#op-vencer').checked, ocultar: $('#op-placar').checked, bonus: $('#op-bonus').checked };
   comecar(() => { novaPartida(cfg); ir('jogo'); });
 });
 function novoSolo() {
-  novaPartida({ modo: 'solo', nomes: ['Você', BOTS.cautela[0], BOTS.ousadia[0], BOTS.esperado[0]], bots: [null, 'cautela', 'ousadia', 'esperado'], palpites: true, vencer: true, ocultar: false });
+  novaPartida({ modo: 'solo', nomes: ['Você', BOTS.cautela[0], BOTS.ousadia[0], BOTS.esperado[0]], bots: [null, 'cautela', 'ousadia', 'esperado'], palpites: true, ritmo: 'todos', vencer: true, ocultar: false });
   ir('jogo');
 }
 
@@ -1032,9 +1055,10 @@ function novoSolo() {
 const ATOS = {
   entrar, revelar: aoRevelar, confirmar: aoConfirmar, contar,
   palpite() { salvar(); passoAtual().palpites = lerCampos('pal'); G.sub = 'decisao'; pintar(false); },
+  'pedir-palpite'() { if (!podePedirPalpite()) return; salvar(); passoAtual().pedido = true; G.sub = 'palpite'; pintar(false); },
   'pedir-vencer'() { salvar(); G.sub = 'vencer'; pintar(false); },
   vencer() { G.reg[G.exp].vencer = lerCampos('ven'); ATOS.proxima(); },
-  pular() { if (G.fase === 'fimExp') return ATOS.proxima(); salvar(); G.sub = 'decisao'; pintar(false); },
+  pular() { if (G.fase === 'fimExp') return ATOS.proxima(); salvar(); if (passoAtual().pedido && !temPalpites(passoAtual())) delete passoAtual().pedido; G.sub = 'decisao'; pintar(false); },
   fico() { G.marc = botsQueSaem(); aoConfirmar(); },
   volto() { G.marc = [0, ...botsQueSaem()]; aoConfirmar(); },
   bots() { G.marc = botsQueSaem(); aoConfirmar(); },
@@ -1121,8 +1145,8 @@ function pintarFichaEquipe() {
       <summary>Expedição ${e + 1}<small id="f-res-${e}"></small></summary>
       <div class="f-corpo">
         <label class="f-campo" for="f-reg-${e}">Região<select id="f-reg-${e}" data-f="exp.${e}.regiao"><option value="">–</option>${REGIOES.map(r => `<option${x.regiao === r.nome ? ' selected' : ''}>${r.nome}</option>`).join('')}</select></label>
-        <div><p class="f-rot">Palpites de risco (%) · um a cada perigo novo</p>
-          <div class="f-linha">${x.pal.map((p, k) => num(`f-pal-${e}-${k}`, `${k + 1}º alerta`, `exp.${e}.pal.${k}`, p, ' max="100"')).join('')}</div></div>
+        <div><p class="f-rot">Palpites de risco (%) · um a cada pausa</p>
+          <div class="f-linha">${x.pal.map((p, k) => num(`f-pal-${e}-${k}`, `${k + 1}ª pausa`, `exp.${e}.pal.${k}`, p, ' max="100"')).join('')}</div></div>
         <div><p class="f-rot">Pontos · preencha quando a equipe retornar</p>
           <div class="f-conta">${num(`f-prov-${e}`, 'Provisórios ao retornar', `exp.${e}.prov`, x.prov)}${num(`f-pend-${e}`, 'Pendentes', `exp.${e}.pend`, x.pend)}${num(`f-desc-${e}`, 'Descoberta', `exp.${e}.desc`, x.desc)}</div></div>
         <div class="f-saida"><div class="tile"><small>Garantidos</small><b id="f-gar-${e}">–</b></div><div class="tile total"><small>Total até aqui</small><b id="f-tot-${e}">0</b></div>

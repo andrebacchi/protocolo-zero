@@ -142,7 +142,7 @@ h1,h2,h3,p,ol,ul{margin:0}
       <li><b>Perigo:</b> o primeiro de cada tipo é só um alerta. O segundo do mesmo tipo encerra a expedição, e quem está em campo perde os dados provisórios.</li>
       <li>Depois de cada carta, todas as equipes decidem ao mesmo tempo: <b>continuar</b> ou <b>retornar</b>.</li>
       <li>Quem retorna transforma os provisórios em pontos garantidos e divide os dados pendentes. Quem retorna <b>sozinho</b> leva também a descoberta que estiver livre.</li>
-      <li>A cada perigo novo, todas as equipes dão um palpite: qual é a <b>probabilidade</b> de a próxima carta encerrar a expedição? Cada equipe anota na ficha antes de responder em voz alta.</li>
+      <li>Uma vez por expedição, num alerta sorteado pelo app (e quando o professor pedir), todas as equipes dão um palpite: qual é a <b>probabilidade</b> de a próxima carta encerrar a expedição? Ninguém sabe qual perigo vai valer, então façam a conta a cada carta. Cada equipe anota na ficha antes de responder em voz alta.</li>
       <li>Vence quem tiver mais pontos ao fim das 5 expedições. As três equipes com os melhores palpites ganham 5, 3 e 1 ponto de bônus.</li>
     </ol>
   </div>
@@ -182,7 +182,7 @@ h1,h2,h3,p,ol,ul{margin:0}
 
   <div class="fecho">
     <ul>
-      <li>Anote um palpite a cada perigo novo que aparecer, mesmo que a equipe já tenha retornado.</li>
+      <li>Anote um palpite a cada pausa de palpite, mesmo que a equipe já tenha retornado.</li>
       <li>Só preencha “pendentes” e “descoberta” na expedição em que a equipe retornou.</li>
       <li>Se um perigo encerrou a expedição com a equipe em campo, os garantidos são 0.</li>
     </ul>
@@ -208,7 +208,7 @@ document.querySelectorAll('.cartoes').forEach(pg => {
 });
 const alvo = document.getElementById('expedicoes');
 for (let e = 1; e <= 5; e++) {
-  const palpites = [1, 2, 3, 4, 5].map(n => `<div class="cx p"><small>${n}º alerta</small><span>%</span></div>`).join('');
+  const palpites = [1, 2, 3, 4, 5].map(n => `<div class="cx p"><small>${n}ª pausa</small><span>%</span></div>`).join('');
   const vencer = e < 5 ? `<div class="cx v empurra"><small>Prob. de vencer</small><span>%</span></div>` : '';
   alvo.insertAdjacentHTML('beforeend', `<div class="exp">
     <div class="num"><small>Expedição</small><b>${e}</b></div>

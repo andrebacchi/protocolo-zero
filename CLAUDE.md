@@ -31,7 +31,7 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
 - A primeira carta de cada expedição nunca é um perigo (sorteada entre coletas e descobertas); o resto do monte é aleatório. Vale também na simulação.
 - Cinco expedições, uma por região do Brasil, em ordem sorteada. As regiões são só cenário: não mudam baralho nem regras.
 - Placar oculto por padrão. O risco real nunca aparece durante a partida, só no relatório final, para as equipes não calibrarem os palpites pelo resultado anterior.
-- Palpite de risco: todas as equipes respondem a cada perigo novo (alerta), inclusive as que já retornaram. Bônus de 5, 3 e 1 ponto (`PREMIO`) para os menores erros absolutos médios;
+- Palpite de risco: todas as equipes respondem, inclusive as que já retornaram. Padrão (`opc.palpites = 'sorteio'`, versão 1.5): uma pausa por expedição, sorteada entre os três primeiros alertas (1/3, 1/2, 1; `pausaSorteada()` só olha o passado, nunca o monte nem o risco real); o professor pode pedir palpites extras ("+ Pedir palpite agora", `passo.pedido`), que entram no relatório. Na preparação dá para escolher `'todos'` (uma pausa a cada alerta, o formato antigo, que cansou a turma no primeiro teste). O modo solo usa `'todos'`. Bônus de 5, 3 e 1 ponto (`PREMIO`) para os menores erros absolutos médios;
   só entra no ranking quem respondeu a pelo menos metade das pausas.
 - Probabilidade de vencer: declarada ao fim das expedições 1 a 4. A referência é uma simulação (`simular`, 3.000 partidas) que supõe que todas as equipes joguem do mesmo jeito; é uma estimativa.
 - A carta "Paciente 0" explica o erro de leitura do "paciente O" e não cita o nome da pessoa.
@@ -55,5 +55,5 @@ Publicação: GitHub Pages, branch `main`, raiz. Endereço: https://andrebacchi.
 ## Pendências
 
 - Os textos históricos das descobertas (John Snow, aids em 1983, Carlos Chagas, SARS-CoV-2) aguardam revisão do André.
-- O jogo ainda não foi testado com uma turma: ritmo das animações e duração da partida são suposições.
+- Primeiro teste com a turma (out. 2026) foi um sucesso; a pausa a cada alerta ficou cansativa (daí o sorteio). Ritmo das animações ainda pode ser ajustado.
 - Ideias em aberto: partida curta (3 expedições), exportar o relatório em formato de planilha, explicar o nome "Protocolo Zero" na abertura.

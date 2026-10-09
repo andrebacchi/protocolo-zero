@@ -7,7 +7,7 @@ Endereço: **https://andrebacchi.github.io/protocolo-zero/** · faz parte do [BA
 ## O que tem
 
 - **Painel do professor:** de 3 a 8 equipes, tela projetada, decisão simultânea com cartões de CONTINUAR e RETORNAR. O placar fica oculto e cada equipe anota o seu.
-- **Palpites de risco:** a cada perigo novo, cada equipe estima a probabilidade de a próxima carta encerrar a expedição. O risco real só aparece no relatório final.
+- **Palpites de risco:** uma pausa por expedição, num alerta sorteado (ou a cada perigo novo, se o professor preferir), e palpites extras quando o professor pedir; cada equipe estima a probabilidade de a próxima carta encerrar a expedição. O risco real só aparece no relatório final.
 - **Probabilidade de vencer:** declarada por equipe ao fim de cada expedição e comparada, no fim, com uma estimativa feita a partir do placar real.
 - **Relatório final:** calibração dos palpites por equipe, ranking e bônus de palpites, risco real carta a carta e decisões com valor esperado negativo.
 - **Ficha da equipe:** para o celular ou tablet de cada equipe, quando não dá para imprimir: ficha de campo que soma sozinha e cartões de CONTINUAR e RETORNAR em tela cheia. Abre por QR code, sem cadastro.

@@ -81,7 +81,14 @@
     </div>
     <div class="nomes" id="nomes"></div>
     <label class="opcao"><input type="checkbox" id="op-palpites" checked><span>Pausas de palpite, equipe por equipe</span>
-      <small>Sempre que surge um perigo novo, todas as equipes estimam a probabilidade de a próxima carta encerrar a expedição, inclusive as que já retornaram. O risco real só aparece no relatório final.</small></label>
+      <small>Todas as equipes estimam a probabilidade de a próxima carta encerrar a expedição, inclusive as que já retornaram. O risco real só aparece no relatório final.</small></label>
+    <fieldset class="sub-opcoes" id="op-ritmo">
+      <legend class="sr">Quando pedir os palpites</legend>
+      <label class="opcao"><input type="radio" name="ritmo" value="sorteio" checked><span>Uma pausa por expedição, num alerta sorteado</span>
+        <small>O app sorteia em qual dos três primeiros alertas a pausa acontece, sem olhar o risco real. Você também pode pedir um palpite extra quando quiser, e ele entra no relatório.</small></label>
+      <label class="opcao"><input type="radio" name="ritmo" value="todos"><span>A cada perigo novo</span>
+        <small>Uma pausa em todo alerta. Dá mais dados para o relatório, mas deixa a partida mais longa.</small></label>
+    </fieldset>
     <label class="opcao"><input type="checkbox" id="op-bonus" checked><span>Bônus para os melhores palpites</span>
       <small>No fim da partida, as três equipes com menor erro médio nos palpites de risco ganham 5, 3 e 1 ponto. O bônus máximo vale o mesmo que a menor descoberta.</small></label>
     <label class="opcao"><input type="checkbox" id="op-vencer" checked><span>Probabilidade de vencer, ao fim de cada expedição</span>

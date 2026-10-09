@@ -161,6 +161,11 @@ h1 em{font-style:normal;color:var(--perigo)}
 .opcao{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start;cursor:pointer}
 .opcao input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--dado)}
 .opcao small{grid-column:2;color:var(--nevoa);font-size:14px;line-height:1.4}
+.sub-opcoes{display:grid;gap:10px;margin:-4px 0 0;padding:0 0 0 30px;border:0;min-width:0}
+.sub-opcoes:disabled{opacity:.45}
+.sub-opcoes .opcao input{accent-color:var(--dado)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.palpite .extra{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid var(--achado);border-radius:3px;font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--achado);vertical-align:2px}
 .ajuda{font:400 14.5px/1.45 var(--texto);color:var(--nevoa)}
 
 /* ---------- jogo ---------- */
