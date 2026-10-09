@@ -29,6 +29,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   // página, ícones e kit: rede primeiro (para ver a versão nova logo), cache se estiver sem internet
-  e.respondWith(fetch(req).then(r => guardar(APP, req, r))
+  // cache: 'no-cache' faz o navegador conferir com o servidor (o GitHub Pages deixa a página 10 minutos no cache HTTP)
+  e.respondWith(fetch(req, { cache: 'no-cache' }).then(r => guardar(APP, req, r))
     .catch(() => caches.match(req).then(tem => tem || (req.mode === 'navigate' ? caches.match('./') : Response.error()))));
 });

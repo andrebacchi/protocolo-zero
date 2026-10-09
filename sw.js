@@ -1,6 +1,6 @@
 /* Protocolo Zero: funciona sem internet depois da primeira visita.
    Este arquivo é gerado pelo build (python3 build.py) a partir de src/sw.js; a versão vem de VERSAO no build.py. */
-const APP = 'protocolo-zero-app-1.5.1';   // página e ícones: troca a cada versão
+const APP = 'protocolo-zero-app-1.5.2';   // página e ícones: troca a cada versão
 const FIXOS = 'protocolo-zero-fixos-v1';                     // imagens e fontes: raramente mudam
 // Todos os apps dividem andrebacchi.github.io: apague só os caches deste app.
 const PREFIXO = 'protocolo-zero-';
@@ -29,6 +29,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   // página, ícones e kit: rede primeiro (para ver a versão nova logo), cache se estiver sem internet
-  e.respondWith(fetch(req).then(r => guardar(APP, req, r))
+  // cache: 'no-cache' faz o navegador conferir com o servidor (o GitHub Pages deixa a página 10 minutos no cache HTTP)
+  e.respondWith(fetch(req, { cache: 'no-cache' }).then(r => guardar(APP, req, r))
     .catch(() => caches.match(req).then(tem => tem || (req.mode === 'navigate' ? caches.match('./') : Response.error()))));
 });
