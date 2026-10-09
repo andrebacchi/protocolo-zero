@@ -993,7 +993,7 @@ async function avancarPodio() {
   await espera(380);
   subirNumero(d.querySelector('.pl-pts b'), s.pts, k === 0 ? 1400 : 900);
   await espera(k === 0 ? 900 : 600);
-  const selo = document.createElement('span'); selo.className = 'selo';
+  const selo = document.createElement('span'); selo.className = 'selo-podio';
   selo.textContent = s.empate ? `${s.lugar}º · empate` : `${s.lugar}º lugar`;
   placa.append(selo);
   d.classList.remove('vez');

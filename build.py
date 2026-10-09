@@ -7,7 +7,7 @@ A cada atualização publicada, aumente VERSAO: ela aparece no rodapé e renova 
 import glob, json, os, re, sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-VERSAO = '1.5'
+VERSAO = '1.5.1'
 FIXOS = 'protocolo-zero-fixos-v1'   # cache das imagens e fontes; só mude se as imagens mudarem
 SITE = 'https://andrebacchi.github.io/protocolo-zero/'
 HUB = 'https://andrebacchi.github.io/bacchilab/'
